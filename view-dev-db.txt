@@ -1,0 +1,17 @@
+You are now connected to database "nc_news" as user "leekirkham".
+ slug | description 
+------+-------------
+(0 rows)
+
+ username | name | avatar_url 
+----------+------+------------
+(0 rows)
+
+ article_id | title | topic | author | body | created_at | votes 
+------------+-------+-------+--------+------+------------+-------
+(0 rows)
+
+ comment_id | body | votes | author | article_id | created_at 
+------------+------+-------+--------+------------+------------
+(0 rows)
+
