@@ -7,6 +7,17 @@ const app = require("../app.js");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe("GET /api Tests", () => {
+  test("/api - Status 200: Responds with the endpoints.json file describing all the available endpoints of the API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.allEndPoints).toBeInstanceOf(Object);
+      });
+  });
+});
+
 describe("GET /api/topics Tests", () => {
   test("/api/topics - Status 200: Responds with an array of topic objects, each of which have the 'slug' and 'description' properties", () => {
     return request(app)
@@ -251,6 +262,12 @@ describe("POST /api/articles Tests", () => {
           ])
         );
       });
+  });
+});
+
+describe("DELETE /api/comments Tests", () => {
+  test("/api/comments/:comment_id - Status 204 deletes the given comment by :comment_id, returns a 204 status and no content", () => {
+    return request(app).delete("/api/comments/18").expect(204);
   });
 });
 
