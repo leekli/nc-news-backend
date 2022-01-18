@@ -61,3 +61,27 @@ exports.updateArticleById = (article_id, articleToUpdate) => {
       return result.rows[0];
     });
 };
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1;`,
+      [article_id]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
+
+exports.addComment = (article_id, newComment) => {
+  const { username, body } = newComment;
+
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [username, body, article_id]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};

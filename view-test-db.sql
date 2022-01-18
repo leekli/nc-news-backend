@@ -4,5 +4,3 @@ SELECT * FROM topics;
 SELECT * FROM users;
 SELECT * FROM articles;
 SELECT * FROM comments;
-
-SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE topic = 'cats' GROUP BY articles.article_id ORDER BY created_at DESC;

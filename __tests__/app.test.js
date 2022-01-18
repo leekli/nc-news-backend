@@ -167,6 +167,23 @@ describe("GET /api/articles Tests", () => {
         );
       });
   });
+  test("/api/articles/:article_id/comments - Status 200: Returns an array of comments for the given article_id which is input as a query - Using article 1 for the test", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toBeInstanceOf(Array);
+        res.body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
+      });
+  });
 });
 
 describe("PATCH /api/articles Tests", () => {
@@ -206,6 +223,33 @@ describe("PATCH /api/articles Tests", () => {
           created_at: "2020-10-15T23:00:00.000Z",
           votes: -100,
         });
+      });
+  });
+});
+
+describe("POST /api/articles Tests", () => {
+  test("/api/articles/:article_id/comments - Status 201: Creates a new comment with the properties: 'username' and 'body', returns a response with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "butter_bridge", body: "This is a new comment!" })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.newComment).toBeInstanceOf(Array);
+        res.body.newComment.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+        expect(res.body.newComment).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ body: "This is a new comment!" }),
+          ])
+        );
       });
   });
 });
