@@ -63,6 +63,110 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
+  test("/api/articles - Status 200: Articles are sorted by date by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("created_at");
+      });
+  });
+  test("/api/articles?sort_by=title - Status 200: Articles are sorted by a passed query ('title' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("title");
+      });
+  });
+  test("/api/articles?sort_by=author - Status 200: Articles are sorted by a passed query ('author' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("author");
+      });
+  });
+  test("/api/articles?sort_by=article_id - Status 200: Articles are sorted by a passed query ('article_id' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("article_id");
+      });
+  });
+  test("/api/articles?sort_by=topic - Status 200: Articles are sorted by a passed query ('topic' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("topic");
+      });
+  });
+  test("/api/articles?sort_by=votes - Status 200: Articles are sorted by a passed query ('votes' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("votes");
+      });
+  });
+  test("/api/articles?sort_by=comment_count - Status 200: Articles are sorted by a passed query ('comment_count' in this case)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("comment_count");
+      });
+  });
+  test("/api/articles?order=desc - Status 200: Articles are ordered by descending by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("order=desc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("/api/articles?order=asc - Status 200: Articles are ordered by ascending when passed as a query and sorted using the default 'created_at' column", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("order=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSortedBy("created_at", {
+          descending: false,
+        });
+      });
+  });
+  test("/api/articles?topic=cats - Status 200: Returns the results from articles which only contain 'cats' in the topic", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=cats")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles).toHaveLength(1);
+        expect(res.body.articles).toEqual(
+          expect.arrayContaining([expect.objectContaining({ topic: "cats" })])
+        );
+      });
+  });
+  test("/api/articles?topic=mitch - Status 200: Returns the results from articles which only contain 'mitch' in the topic", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=mitch")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles).toHaveLength(11);
+        expect(res.body.articles).toEqual(
+          expect.arrayContaining([expect.objectContaining({ topic: "mitch" })])
+        );
+      });
+  });
 });
 
 describe("PATCH /api/articles Tests", () => {
@@ -107,20 +211,46 @@ describe("PATCH /api/articles Tests", () => {
 });
 
 describe("Error Testing", () => {
-  test("Status 404: Error 404 returned if the topic pathway is mis-spelt as 'topicz'", () => {
+  test("/api/topicss - Status 404: Error 404 returned if the topic pathway is mis-spelt as 'topicz'", () => {
     return request(app)
-      .get("/api/topicz")
+      .get("/api/topicss")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toEqual("Invalid URL");
       });
   });
-  test("Status 404: Error 404 returned if an article ID is requested that does not exist", () => {
+  test("/api/articles/3423234 - Status 404: Error 404 returned if an article ID is requested that does not exist", () => {
     return request(app)
       .get("/api/articles/3423234")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles?sort_by=nosuchcolumn - Status 400: Returns an error for an invalid sort_by column name passed as a query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=nosuchcolumn")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles?order=ascending - Status 400: Returns an error for an invalid order column name passed as a query", () => {
+    return request(app)
+      .get("/api/articles?order=ascending")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles?topic=paper - Status 200: the queried topic ('paper') exists but has no topics with paper assigned to it yet, returns an empty array", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=paper")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles).toHaveLength(0);
       });
   });
 });
