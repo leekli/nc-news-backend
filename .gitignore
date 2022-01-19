@@ -3,3 +3,4 @@ node_modules
 view-dev-db.txt
 view-test-db.txt
 instructions.md
+.env-example
