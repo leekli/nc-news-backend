@@ -271,7 +271,15 @@ describe("DELETE /api/comments Tests", () => {
   });
 });
 
-describe("Error Testing", () => {
+describe("GET - Error Testing", () => {
+  test("/notARoute - Status 404: Error 404 returned if a GET ALL is requested on a route that does not exist'", () => {
+    return request(app)
+      .get("/notARoute")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Invalid URL");
+      });
+  });
   test("/api/topicss - Status 404: Error 404 returned if the topic pathway is mis-spelt as 'topicz'", () => {
     return request(app)
       .get("/api/topicss")
@@ -286,6 +294,14 @@ describe("Error Testing", () => {
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/notAnId - Status 400: Error 400 returned if an invalid ID is requested on a valid path", () => {
+    return request(app)
+      .get("/api/articles/notAnId")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
       });
   });
   test("/api/articles?sort_by=nosuchcolumn - Status 400: Returns an error for an invalid sort_by column name passed as a query", () => {
@@ -312,6 +328,70 @@ describe("Error Testing", () => {
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
         expect(res.body.articles).toHaveLength(0);
+      });
+  });
+});
+
+describe("POST - Error Testing", () => {
+  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "icellusedkars" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+});
+
+describe("DELETE - Error Testing", () => {
+  test("/api/comments/:comment_id - Status 404 when resource/ID does not exist during a DELETE operation", () => {
+    return request(app)
+      .delete("/api/comments/12348798")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/comments/:comment_id - Status 400 when an invalid ID is input to a path which exists on a DELETE operation", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+});
+
+describe("PATCH/PUT - Error Testing", () => {
+  test("/api/articles/:article_id - Status 404: Error 404 returned if an article ID is requested that does not exist", () => {
+    const voteUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/11434")
+      .send(voteUpdate)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id - Status 400: Incorrect data type put on to a PATCH request, a string input instead of an integer", () => {
+    const voteUpdate = { inc_votes: "Incorrect input" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id - Status 400: Malformed body / Missing required fields returns an error 400", () => {
+    const voteUpdate = {};
+    return request(app)
+      .patch("/api/articles/1")
+      .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
       });
   });
 });

@@ -1,3 +1,5 @@
+// db/utils/seed-formatting.js - Functions to format data during the database seeding process
+
 exports.formatTopicsData = (topicData) => {
   const formattedTopics = topicData.map((topic) => [
     topic.description,

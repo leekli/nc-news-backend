@@ -1,3 +1,5 @@
+// controllers/articles.controllers.js - Controllers file for dealing with requests from the 'articles' Router and 'articles' data table
+
 const {
   fetchArticleById,
   updateArticleById,
@@ -6,6 +8,9 @@ const {
   addComment,
 } = require("../models/articles.models.js");
 
+const { checkArticleExists } = require("../db/utils/utils.js");
+
+// getArticles function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic } = req.query;
 
@@ -18,6 +23,7 @@ exports.getArticles = (req, res, next) => {
     });
 };
 
+// getArticleById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
@@ -34,37 +40,60 @@ exports.getArticleById = (req, res, next) => {
     });
 };
 
+// patchArticleById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
-  updateArticleById(article_id, req.body)
-    .then((updatedArticle) => {
-      res.status(200).send({ article: updatedArticle });
+  return checkArticleExists(article_id)
+    .then((articleExists) => {
+      if (articleExists) {
+        return updateArticleById(article_id, req.body).then(
+          (updatedArticle) => {
+            res.status(200).send({ article: updatedArticle });
+          }
+        );
+      } else {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
     })
     .catch((err) => {
       next(err);
     });
 };
 
+// getCommentsByArticleId function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
 
-  fetchCommentsByArticleId(article_id)
-    .then((comments) => {
-      res.status(200).send({ comments: comments });
+  return checkArticleExists(article_id)
+    .then((articleExists) => {
+      if (articleExists) {
+        return fetchCommentsByArticleId(article_id).then((comments) => {
+          res.status(200).send({ comments: comments });
+        });
+      } else {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
     })
     .catch((err) => {
       next(err);
     });
 };
 
+// postCommentByArticleId function - Retrieves data from articles models file, and returns a status code of 201 and the data if successful
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const newComment = req.body;
 
-  addComment(article_id, newComment)
-    .then((newComment) => {
-      res.status(201).send({ newComment });
+  return checkArticleExists(article_id)
+    .then((articleExists) => {
+      if (articleExists) {
+        return addComment(article_id, newComment).then((newComment) => {
+          res.status(201).send({ newComment });
+        });
+      } else {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
     })
     .catch((err) => {
       next(err);

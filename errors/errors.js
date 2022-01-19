@@ -5,7 +5,7 @@ exports.handle404s = (req, res) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  if (err.status) {
+  if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
@@ -13,7 +13,12 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePsqlErrors = (err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "23502") {
+  if (
+    err.code === "22P02" ||
+    err.code === "23502" ||
+    err.code === "42703" ||
+    err.code === "42P01"
+  ) {
     res.status(400).send({ msg: "Bad request" });
   } else {
     next(err);
