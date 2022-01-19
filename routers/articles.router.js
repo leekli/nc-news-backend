@@ -6,6 +6,8 @@ const {
   getArticles,
   getCommentsByArticleId,
   postCommentByArticleId,
+  postArticle,
+  deleteArticleById,
 } = require("../controllers/articles.controllers.js");
 
 const articlesRouter = express.Router();
@@ -19,6 +21,10 @@ articlesRouter.get("/:article_id/comments", getCommentsByArticleId);
 articlesRouter.patch("/:article_id", patchArticleById);
 
 // POST Requests
+articlesRouter.post("/", postArticle);
 articlesRouter.post("/:article_id/comments", postCommentByArticleId);
+
+// DELETE Requests
+articlesRouter.delete("/:article_id", deleteArticleById);
 
 module.exports = articlesRouter;

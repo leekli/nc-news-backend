@@ -226,6 +226,80 @@ describe("GET /api/users Tests", () => {
   });
 });
 
+describe("POST /api/articles Tests", () => {
+  test("/api/articles - Status 201: Creates a new article with the properties: author, title, body, topic, returns a response with the new posted article as an object with 8 properties", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "This is my test title",
+        body: "This is my test body text of the article",
+        topic: "paper",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.article).toBeInstanceOf(Array);
+        res.body.article.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 201: Creates a new comment with the properties: 'username' and 'body', returns a response with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "butter_bridge", body: "This is a new comment!" })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.newComment).toBeInstanceOf(Array);
+        res.body.newComment.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+        expect(res.body.newComment).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ body: "This is a new comment!" }),
+          ])
+        );
+      });
+  });
+});
+
+describe("POST /api/topics Tests", () => {
+  test("/api/topics - Status 201: Creates a new topic with the properties: slug and description, returns a response with the new topic as an object with 2 properties", () => {
+    return request(app)
+      .post("/api/topics")
+      .send({
+        slug: "Star Wars",
+        description: "In a galaxy, far far away...",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.topic).toBeInstanceOf(Array);
+        res.body.topic.forEach((topic) => {
+          expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("PATCH /api/articles Tests", () => {
   test("/api/articles/:article_id - Status 200: Test 1 - Updates the specificed article ID votes column with the value input, and responds with the updated article - Increases article 1 votes by +1", () => {
     const voteUpdate = { inc_votes: 1 };
@@ -263,33 +337,6 @@ describe("PATCH /api/articles Tests", () => {
           created_at: "2020-10-15T23:00:00.000Z",
           votes: -100,
         });
-      });
-  });
-});
-
-describe("POST /api/articles Tests", () => {
-  test("/api/articles/:article_id/comments - Status 201: Creates a new comment with the properties: 'username' and 'body', returns a response with the posted comment", () => {
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send({ username: "butter_bridge", body: "This is a new comment!" })
-      .expect(201)
-      .then((res) => {
-        expect(res.body.newComment).toBeInstanceOf(Array);
-        res.body.newComment.forEach((comment) => {
-          expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            votes: expect.any(Number),
-            author: expect.any(String),
-            article_id: expect.any(Number),
-            created_at: expect.any(String),
-          });
-        });
-        expect(res.body.newComment).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({ body: "This is a new comment!" }),
-          ])
-        );
       });
   });
 });
@@ -336,6 +383,12 @@ describe("PATCH /api/comments", () => {
 describe("DELETE /api/comments Tests", () => {
   test("/api/comments/:comment_id - Status 204 deletes the given comment by :comment_id, returns a 204 status and no content", () => {
     return request(app).delete("/api/comments/18").expect(204);
+  });
+});
+
+describe("DELETE /api/articles Tests", () => {
+  test("/api/articles/:article_id - Status 204 deletes the given article by :article_id, returns a 204 status and no content", () => {
+    return request(app).delete("/api/articles/12").expect(204);
   });
 });
 
@@ -409,10 +462,34 @@ describe("GET - Error Testing", () => {
 });
 
 describe("POST - Error Testing", () => {
+  test("/api/articles - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        body: "This is my test body text of the article",
+        topic: "paper",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
   test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send({ username: "icellusedkars" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/topics - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/topics")
+      .send({
+        description: "A description with no slug set",
+      })
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");
@@ -432,6 +509,22 @@ describe("DELETE - Error Testing", () => {
   test("/api/comments/:comment_id - Status 400 when an invalid ID is input to a path which exists on a DELETE operation", () => {
     return request(app)
       .delete("/api/comments/notAnId")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id - Status 404 when resource/ID does not exist during a DELETE operation", () => {
+    return request(app)
+      .delete("/api/articles/3434")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id - Status 400 when an invalid ID is input to a path which exists on a DELETE operation", () => {
+    return request(app)
+      .delete("/api/articles/notAnId")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");

@@ -6,6 +6,8 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
   addComment,
+  addArticle,
+  removeArticle,
 } = require("../models/articles.models.js");
 
 const { checkArticleExists } = require("../db/utils/utils.js");
@@ -90,6 +92,38 @@ exports.postCommentByArticleId = (req, res, next) => {
       if (articleExists) {
         return addComment(article_id, newComment).then((newComment) => {
           res.status(201).send({ newComment });
+        });
+      } else {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+// postArticle function - Retrieves data from articles models file, and returns a status code of 201 and the data if successful
+exports.postArticle = (req, res, next) => {
+  const newArticle = req.body;
+
+  addArticle(newArticle)
+    .then((article) => {
+      res.status(201).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+// deleteArticleById function - Retrieves data from articles models file, and returns a status code of 204 if deletion was successful
+exports.deleteArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+
+  return checkArticleExists(article_id)
+    .then((articleExists) => {
+      if (articleExists) {
+        return removeArticle(article_id).then((deletedArticle) => {
+          res.status(204).send({});
         });
       } else {
         return Promise.reject({ status: 404, msg: "Not found" });

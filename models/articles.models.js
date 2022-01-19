@@ -87,3 +87,34 @@ exports.addComment = (article_id, newComment) => {
       return result.rows;
     });
 };
+
+exports.addArticle = (newArticle) => {
+  const { author, title, body, topic } = newArticle;
+
+  return db
+    .query(
+      `INSERT INTO articles (title, topic, author, body) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [title, topic, author, body]
+    )
+    .then((result) => {
+      const { article_id } = result.rows[0];
+
+      return db.query(
+        `SELECT articles.*, COUNT(comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`,
+        [article_id]
+      );
+    })
+    .then((result) => {
+      return result.rows;
+    });
+};
+
+exports.removeArticle = (article_id) => {
+  return db
+    .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *;`, [
+      article_id,
+    ])
+    .then((result) => {
+      return result.rows[0];
+    });
+};
