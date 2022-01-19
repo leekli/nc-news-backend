@@ -197,6 +197,35 @@ describe("GET /api/articles Tests", () => {
   });
 });
 
+describe("GET /api/users Tests", () => {
+  test("/api/users - Status 200: Responds with an array of all objects from users containing usernames as the only property returned", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.users).toBeInstanceOf(Array);
+        res.body.users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+          });
+        });
+      });
+  });
+  test("/api/users/:username - Status 200: Responds with a user object specificed by 'username' query with the following properties: username, avatar_url and name", () => {
+    return request(app)
+      .get("/api/users/lurker")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.user).toBeInstanceOf(Object);
+        expect(res.body.user).toMatchObject({
+          username: expect.any(String),
+          avatar_url: expect.any(String),
+          name: expect.any(String),
+        });
+      });
+  });
+});
+
 describe("PATCH /api/articles Tests", () => {
   test("/api/articles/:article_id - Status 200: Test 1 - Updates the specificed article ID votes column with the value input, and responds with the updated article - Increases article 1 votes by +1", () => {
     const voteUpdate = { inc_votes: 1 };
@@ -261,6 +290,45 @@ describe("POST /api/articles Tests", () => {
             expect.objectContaining({ body: "This is a new comment!" }),
           ])
         );
+      });
+  });
+});
+
+describe("PATCH /api/comments", () => {
+  test("/api/comments/:comment_id - Status 200: Updates the specificed comment ID votes column with the value input, and responds with the updated comment - Test 1 - Increases comment votes by +1", () => {
+    const voteUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(voteUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Object);
+        expect(res.body.comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 17,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-05T23:00:00.000Z",
+        });
+      });
+  });
+  test("/api/comments/:comment_id - Status 200: Updates the specificed comment ID votes column with the value input, and responds with the updated comment - Test 2 - Decreases comment votes by -1", () => {
+    const voteUpdate = { inc_votes: -1 };
+    return request(app)
+      .patch("/api/comments/2")
+      .send(voteUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Object);
+        expect(res.body.comment).toEqual({
+          comment_id: 2,
+          body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          votes: 13,
+          author: "butter_bridge",
+          article_id: 1,
+          created_at: "2020-10-31T00:00:00.000Z",
+        });
       });
   });
 });
@@ -330,6 +398,14 @@ describe("GET - Error Testing", () => {
         expect(res.body.articles).toHaveLength(0);
       });
   });
+  test("/api/users/fakeName - Status 404: Error 404 returned if a username is requested that does not exist", () => {
+    return request(app)
+      .get("/api/users/fakeName")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
 });
 
 describe("POST - Error Testing", () => {
@@ -388,6 +464,36 @@ describe("PATCH/PUT - Error Testing", () => {
     const voteUpdate = {};
     return request(app)
       .patch("/api/articles/1")
+      .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/comments/:comment_id - Status 404: Error 404 returned if a comment ID is requested that does not exist", () => {
+    const voteUpdate = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/8754")
+      .send(voteUpdate)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/comments/:comment_id - Status 400: Incorrect data type put on to a PATCH request, a string input instead of an integer", () => {
+    const voteUpdate = { inc_votes: "Incorrect input" };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/comments/:comment_id - Status 400: Malformed body / Missing required fields returns an error 400", () => {
+    const voteUpdate = {};
+    return request(app)
+      .patch("/api/comments/4")
       .send(voteUpdate)
       .expect(400)
       .then((res) => {

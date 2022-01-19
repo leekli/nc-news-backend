@@ -62,7 +62,7 @@ const seed = (data) => {
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
         body TEXT NOT NULL,
-        votes INT DEFAULT 0,
+        votes INT DEFAULT 0 NOT NULL,
         author TEXT REFERENCES users(username),
         article_id INT REFERENCES articles(article_id),
         created_at DATE DEFAULT CURRENT_TIMESTAMP

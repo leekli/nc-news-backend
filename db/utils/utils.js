@@ -28,12 +28,26 @@ exports.checkArticleExists = (article_id) => {
     });
 };
 
+// checkTopicExists Function - Conducts a check on the topics data table to check that the topic request, exists.
 exports.checkTopicExists = (topic) => {
   return db
     .query("SELECT * FROM topics WHERE slug=$1", [topic])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Not found" });
+      }
+    });
+};
+
+// checkUserExists Function - Conducts a check on the users data table to check that the username request, exists.
+exports.checkUserExists = (username) => {
+  return db
+    .query(`SELECT * FROM users WHERE username=$1`, [username])
+    .then(({ rows }) => {
+      if (rows.length) {
+        return true;
+      } else {
+        return false;
       }
     });
 };
