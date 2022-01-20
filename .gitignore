@@ -4,3 +4,7 @@ view-dev-db.txt
 view-test-db.txt
 instructions.md
 .env-example
+error-handling.md
+hosting.md
+view-dev-db.sql
+view-test-db.sql
