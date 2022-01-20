@@ -79,9 +79,6 @@ $ npm test
 - pg 8.x
 - pg-format 1.x
 - dotenv 14.x
-- jest 27.x
-- jest-sorted 1.x
-- supertest 6.x
 - nodemon 2.x
   </i>
 
