@@ -4,13 +4,9 @@
 
 ---
 
-<br>
-
 ## **News API** - Live version: https://lee-nc-news.herokuapp.com/api/
 
 ---
-
-<br>
 
 ## **Description**
 
@@ -19,8 +15,6 @@ A 'News API' build using Node.js, using Express server and a PostgreSQL database
 All endpoints can be found in the `endpoints.json` file or go to https://lee-nc-news.herokuapp.com/api/ which lists all endpoints which can be interacted with.
 
 ---
-
-<br>
 
 # **Setup Instructions**
 
@@ -55,8 +49,6 @@ $ npm install
 
   > .test database is `nc_news_test`
 
-<br>
-
 ### **Database set-up and seeding:**
 
 - Before using or testing the application, you will need to set the database up and then seed it with the data:
@@ -78,8 +70,6 @@ $ npm test
 
 ---
 
-<br>
-
 ### **Application dependencies:**
 
 <i>
@@ -93,4 +83,13 @@ $ npm test
 - jest-sorted 1.x
 - supertest 6.x
 - nodemon 2.x
+  </i>
+
+### **Developer only dependencies:**
+
+<i>
+
+- jest 27.x
+- jest-sorted 1.x
+- supertest 6.x
   </i>
