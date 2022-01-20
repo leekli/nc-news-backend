@@ -10,19 +10,38 @@ const {
   removeArticle,
 } = require("../models/articles.models.js");
 
-const { checkArticleExists } = require("../db/utils/utils.js");
+const {
+  checkArticleExists,
+  checkTopicExists,
+} = require("../db/utils/utils.js");
 
 // getArticles function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic } = req.query;
 
-  fetchArticles(sort_by, order, topic)
-    .then((allArticles) => {
-      res.status(200).send({ articles: allArticles });
-    })
-    .catch((err) => {
-      next(err);
-    });
+  if (topic === undefined) {
+    fetchArticles(sort_by, order, topic)
+      .then((allArticles) => {
+        res.status(200).send({ articles: allArticles });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    return checkTopicExists(topic)
+      .then((topicExists) => {
+        if (topicExists) {
+          return fetchArticles(sort_by, order, topic).then((allArticles) => {
+            res.status(200).send({ articles: allArticles });
+          });
+        } else {
+          return Promise.reject({ status: 404, msg: "Not found" });
+        }
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 };
 
 // getArticleById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful

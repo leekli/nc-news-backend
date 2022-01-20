@@ -10,18 +10,165 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all the articles",
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 2,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "comment_count": 7
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an array of the specified article by article_id",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 2,
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "comment_count": 7
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of all comments for a specified article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 2,
+          "votes": 3,
+          "created_at": 1527695953341,
+          "author": "weegembump",
+          "body": "Comment text from a comment linked to an article by article_id"
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "weegembump"
+        }
+      ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "serves an array of the specified user by username",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "weegembump",
+          "avatar_id": "https://www.link.com/avatar_link.png",
+          "name": "Users name"
+        }
+      ]
+    }
+  },
+  "POST /api/articles": {
+    "description": "posts a new article as an array into the database",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 27,
+          "title": "This is a new article title",
+          "topic": "cooking",
+          "author": "rogersop",
+          "body": "Text from the article...",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "comment_count": 7
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a new comment to an article by specified article_id",
+    "queries": [],
+    "exampleResponse": {
+      "newComment": [
+        {
+          "comment_id": 29,
+          "body": "This is a new comment!",
+          "votes": 0,
+          "author": "userA",
+          "article_id": 3,
           "created_at": 1527695953341
         }
       ]
     }
+  },
+  "POST /api/topics": {
+    "description": "posts a new topic to the database",
+    "queries": [],
+    "exampleResponse": {
+      "topic": [
+        {
+          "slug": "Topic title",
+          "Desription": "Description of new topic title here"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "patches/updates an existing article by article_id and increases/decreases the votes property by the specified amount",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-08T23:00:00.000Z",
+          "votes": 101
+        }
+      ]
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "patches/updates an existing comment by comment_id and increases/decreases the votes property by the specified amount",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 1,
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "votes": 17,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "created_at": "2020-04-05T23:00:00.000Z"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a specified comment by comment_id from the database - no response sent",
+    "queries": []
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes a specified article by article_id from the database - no response send",
+    "queries": []
   }
 }

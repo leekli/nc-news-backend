@@ -178,6 +178,62 @@ describe("GET /api/articles Tests", () => {
         );
       });
   });
+  test("/api/articles?sort_by=author&order=asc - Status 200: Multiple end-point test 1 (2 parameters) - To ensure multiple queries are actioned", () => {
+    return request(app)
+      .get("/api/articles?sort_by=author&order=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("author", {
+          descending: false,
+        });
+      });
+  });
+  test("/api/articles?sort_by=topic&order=desc - Status 200: Multiple end-point test 2 (2 parameters) - To ensure multiple queries are actioned", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic&order=desc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("topic", {
+          descending: true,
+        });
+      });
+  });
+  test("/api/articles?sort_by=topic&order=desc - Status 200: Multiple end-point test 3 (2 parameters) - To ensure multiple queries are actioned", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count&order=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeSorted("comment_count", {
+          descending: false,
+        });
+      });
+  });
+  test("/api/articles?topic=cats&order=desc - Status 200: Multiple end-point test 4 (2 parameters) - To ensure multiple queries are actioned", () => {
+    return request(app)
+      .get("/api/articles?topic=cats&order=desc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toEqual(
+          expect.arrayContaining([expect.objectContaining({ topic: "cats" })])
+        );
+        expect(res.body.articles).toBeSorted("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("/api/articles?topic=cats&sort_by=comment_count&order=asc - Status 200: Multiple end-point test 5 (3 parameters) - To ensure multiple queries are actioned", () => {
+    return request(app)
+      .get("/api/articles?topic=cats&sort_by=comment_count&order=asc")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toEqual(
+          expect.arrayContaining([expect.objectContaining({ topic: "cats" })])
+        );
+        expect(res.body.articles).toBeSorted("comment_count", {
+          descending: false,
+        });
+      });
+  });
   test("/api/articles/:article_id/comments - Status 200: Returns an array of comments for the given article_id which is input as a query - Using article 1 for the test", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -449,6 +505,15 @@ describe("GET - Error Testing", () => {
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
         expect(res.body.articles).toHaveLength(0);
+      });
+  });
+  test("/api/articles?topic=doesNotExist - Status 404: the queried topic does not exist, returns with an error 404 Not found message", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=doesNotExist")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
       });
   });
   test("/api/users/fakeName - Status 404: Error 404 returned if a username is requested that does not exist", () => {
