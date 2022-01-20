@@ -178,6 +178,21 @@ describe("GET /api/articles Tests", () => {
         );
       });
   });
+  test("/api/articles?author=icellusedkars - Status 200: Returns the results from articles which have an author specified by the query", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("author=icellusedkars")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles).toHaveLength(6);
+        expect(res.body.articles).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({ author: "icellusedkars" }),
+          ])
+        );
+      });
+  });
   test("/api/articles?sort_by=author&order=asc - Status 200: Multiple end-point test 1 (2 parameters) - To ensure multiple queries are actioned", () => {
     return request(app)
       .get("/api/articles?sort_by=author&order=asc")
@@ -356,6 +371,29 @@ describe("POST /api/topics Tests", () => {
   });
 });
 
+describe("POST /api/users Tests", () => {
+  test("/api/users - Status 201: Creates a new user, returns a response with the new user as an object with 3 properties", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "userNameA",
+        name: "Users Name a",
+        avatar_url: "",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.user).toBeInstanceOf(Array);
+        res.body.user.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("PATCH /api/articles Tests", () => {
   test("/api/articles/:article_id - Status 200: Test 1 - Updates the specificed article ID votes column with the value input, and responds with the updated article - Increases article 1 votes by +1", () => {
     const voteUpdate = { inc_votes: 1 };
@@ -516,6 +554,42 @@ describe("GET - Error Testing", () => {
         expect(res.body.msg).toEqual("Not found");
       });
   });
+  test("/api/articles?author=nouser - Status 404: the queried author in articles does not exist, returns with an error 404 Not found message", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("author=nouser")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles?topic=doesNotExist&order=desc - Status 404: multiple query (2 params) request which has one invalid query returns error 404", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=doesNotExist&order=desc")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles?topic=doesNotExist&order=desc&sort_by=nosuchcolumn - Status 404: multiple query (3 params) request which has two invalid query returns error 404", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=doesNotExist&order=desc&sort_by=nosuchcolumn")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles?topic=doesNotExist&order=desc&sort_by=nosuchcolumn - Status 404: multiple query (3 params) request where all parameters are invaliq, returns error 404", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("topic=doesNotExist&order=descrt&sort_by=nosuchcolumn")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
   test("/api/users/fakeName - Status 404: Error 404 returned if a username is requested that does not exist", () => {
     return request(app)
       .get("/api/users/fakeName")
@@ -558,6 +632,32 @@ describe("POST - Error Testing", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/users - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "userNameA",
+        avatar_url: "",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/users - Status 403: A username is input which already exists in the database, returning error code 403 Already exists", () => {
+    return request(app)
+      .post("/api/users")
+      .send({
+        username: "icellusedkars",
+        name: "sam",
+        avatar_url:
+          "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+      })
+      .expect(403)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Already exists");
       });
   });
 });

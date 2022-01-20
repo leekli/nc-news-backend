@@ -11,7 +11,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all the articles",
-    "queries": ["topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -126,6 +126,19 @@
         {
           "slug": "Topic title",
           "Desription": "Description of new topic title here"
+        }
+      ]
+    }
+  },
+  "POST /api/users": {
+    "description": "posts a new user to the database",
+    "queries": [],
+    "exampleResponse": {
+      "topic": [
+        {
+          "username": "username",
+          "name": "User's name",
+          "avatar_id": "https://www.link.com/avatar_link.png"
         }
       ]
     }

@@ -13,27 +13,46 @@ const {
 const {
   checkArticleExists,
   checkTopicExists,
+  checkUserExists,
 } = require("../db/utils/utils.js");
 
 // getArticles function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic } = req.query;
+  const { sort_by, order, topic, author } = req.query;
 
-  if (topic === undefined) {
-    fetchArticles(sort_by, order, topic)
+  if (topic === undefined && author === undefined) {
+    fetchArticles(sort_by, order, topic, author)
       .then((allArticles) => {
         res.status(200).send({ articles: allArticles });
       })
       .catch((err) => {
         next(err);
       });
-  } else {
+  } else if (topic !== undefined) {
     return checkTopicExists(topic)
       .then((topicExists) => {
         if (topicExists) {
-          return fetchArticles(sort_by, order, topic).then((allArticles) => {
-            res.status(200).send({ articles: allArticles });
-          });
+          return fetchArticles(sort_by, order, topic, author).then(
+            (allArticles) => {
+              res.status(200).send({ articles: allArticles });
+            }
+          );
+        } else {
+          return Promise.reject({ status: 404, msg: "Not found" });
+        }
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else if (author !== undefined) {
+    return checkUserExists(author)
+      .then((userExists) => {
+        if (userExists) {
+          return fetchArticles(sort_by, order, topic, author).then(
+            (allArticles) => {
+              res.status(200).send({ articles: allArticles });
+            }
+          );
         } else {
           return Promise.reject({ status: 404, msg: "Not found" });
         }

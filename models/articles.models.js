@@ -2,7 +2,12 @@
 
 const db = require("../db/connection.js");
 
-exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
+exports.fetchArticles = (
+  sort_by = "created_at",
+  order = "DESC",
+  topic,
+  author
+) => {
   const allowedSortBys = [
     "title",
     "author",
@@ -31,6 +36,9 @@ exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
   if (topic) {
     queryValues.push(topic);
     queryStr += ` WHERE topic = '${topic}' GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+  } else if (author) {
+    queryValues.push(topic);
+    queryStr += ` WHERE articles.author = '${author}' GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
   } else {
     queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
   }

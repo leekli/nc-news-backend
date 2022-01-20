@@ -17,3 +17,16 @@ exports.fetchUserByUsername = (username) => {
       return result.rows[0];
     });
 };
+
+exports.createUser = (newUserDetails) => {
+  const { username, name, avatar_url } = newUserDetails;
+
+  return db
+    .query(
+      `INSERT INTO users (username, name, avatar_url) VALUES ($1, $2, $3) RETURNING *;`,
+      [username, name, avatar_url]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
