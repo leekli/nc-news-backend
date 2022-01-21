@@ -60,16 +60,27 @@ exports.fetchArticleById = (article_id) => {
 };
 
 exports.updateArticleById = (article_id, articleToUpdate) => {
-  const { inc_votes } = articleToUpdate;
+  const { inc_votes, body } = articleToUpdate;
 
-  return db
-    .query(
-      `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
-      [inc_votes, article_id]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
+  if (body === undefined) {
+    return db
+      .query(
+        `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
+        [inc_votes, article_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  } else if (body !== undefined) {
+    return db
+      .query(
+        `UPDATE articles SET body = $1 WHERE article_id = $2 RETURNING *;`,
+        [body, article_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
 };
 
 exports.fetchCommentsByArticleId = (article_id) => {

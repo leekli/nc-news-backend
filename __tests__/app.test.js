@@ -332,6 +332,14 @@ describe("POST /api/articles Tests", () => {
             comment_count: expect.any(String),
           });
         });
+        expect(res.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              body: "This is my test body text of the article",
+              topic: "paper",
+            }),
+          ])
+        );
       });
   });
   test("/api/articles/:article_id/comments - Status 201: Creates a new comment with the properties: 'username' and 'body', returns a response with the posted comment", () => {
@@ -379,6 +387,14 @@ describe("POST /api/topics Tests", () => {
             description: expect.any(String),
           });
         });
+        expect(res.body.topic).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              slug: "Star Wars",
+              description: "In a galaxy, far far away...",
+            }),
+          ])
+        );
       });
   });
 });
@@ -403,6 +419,14 @@ describe("POST /api/users Tests", () => {
             avatar_url: expect.any(String),
           });
         });
+        expect(res.body.user).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              username: "userNameA",
+              name: "Users Name a",
+            }),
+          ])
+        );
       });
   });
 });
@@ -469,6 +493,31 @@ describe("PATCH /api/articles Tests", () => {
         });
       });
   });
+  test("/api/articles/:article_id - Status 200: Updates the body of a specified article by :article_id", () => {
+    const bodyUpdate = { body: "This is a new body to an article!" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(bodyUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.article).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
+        expect(res.body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+        expect(res.body.article).toEqual(
+          expect.objectContaining({
+            body: "This is a new body to an article!",
+          })
+        );
+      });
+  });
 });
 
 describe("PATCH /api/comments", () => {
@@ -527,6 +576,30 @@ describe("PATCH /api/comments", () => {
           article_id: expect.any(Number),
           created_at: expect.any(String),
         });
+      });
+  });
+  test("/api/comments/:comment_id - Status 200: Updates the body of a specified comment by :comment_id", () => {
+    const bodyUpdate = { body: "This is a new body for an existing comment!" };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(bodyUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
+        expect(res.body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          author: expect.any(String),
+          article_id: expect.any(Number),
+          created_at: expect.any(String),
+        });
+        expect(res.body.comment).toEqual(
+          expect.objectContaining({
+            body: "This is a new body for an existing comment!",
+          })
+        );
       });
   });
 });
@@ -886,6 +959,46 @@ describe("PATCH/PUT - Error Testing", () => {
     return request(app)
       .patch("/api/comments/3")
       .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id - Status 404: Error 404 returned if a valid article ID is requested that does not exist", () => {
+    const bodyUpdate = { body: "This is a new body to an article!" };
+    return request(app)
+      .patch("/api/articles/12432")
+      .send(bodyUpdate)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id - Status 400: Error 400 returned if an invalid article_id is passed as a query", () => {
+    const bodyUpdate = { body: "This is a new body to an article!" };
+    return request(app)
+      .patch("/api/articles/not_an_id")
+      .send(bodyUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/comments/:comment_id - Status 404: Error 404 returned if a valid comment ID is requested that does not exist", () => {
+    const bodyUpdate = { body: "This is a new body to a comment!" };
+    return request(app)
+      .patch("/api/comments/8764")
+      .send(bodyUpdate)
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/comments/:comment_id - Status 400: Error 400 returned if an invalid comment_id is passed as a query", () => {
+    const bodyUpdate = { body: "This is a new body to a comment!" };
+    return request(app)
+      .patch("/api/comments/not_an_id")
+      .send(bodyUpdate)
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");

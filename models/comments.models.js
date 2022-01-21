@@ -13,16 +13,27 @@ exports.removeCommentById = (comment_id) => {
 };
 
 exports.updateCommentById = (comment_id, commentToUpdate) => {
-  const { inc_votes } = commentToUpdate;
+  const { inc_votes, body } = commentToUpdate;
 
-  return db
-    .query(
-      `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`,
-      [inc_votes, comment_id]
-    )
-    .then((result) => {
-      return result.rows[0];
-    });
+  if (body === undefined) {
+    return db
+      .query(
+        `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`,
+        [inc_votes, comment_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  } else if (body !== undefined) {
+    return db
+      .query(
+        `UPDATE comments SET body = $1 WHERE comment_id = $2 RETURNING *;`,
+        [body, comment_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  }
 };
 
 exports.fetchCommentById = (comment_id) => {
