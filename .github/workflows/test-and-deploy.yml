@@ -1,0 +1,32 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: intro
+      run: echo "This is the Test and Deploy script..."
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout and clone repo
+      uses: actions/checkout@v2
+
+      - name: setup postgres
+      uses: harmon758/postgresql-action@v1
+      with:
+        postgresql db: nc_news_test
+        postgresql user: test-user
+        postgresql password: testuserpassword
+
+      - name: install dependencies
+      run: npm i
+
+      - name: test the app (app.test.js)
+      run: PGDATABASE=nc_news_test PGUSER=test-user PGPASSWORD=testuserpassword npm t
