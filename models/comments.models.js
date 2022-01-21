@@ -24,3 +24,11 @@ exports.updateCommentById = (comment_id, commentToUpdate) => {
       return result.rows[0];
     });
 };
+
+exports.fetchCommentById = (comment_id) => {
+  return db
+    .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
+    .then((result) => {
+      return result.rows[0];
+    });
+};

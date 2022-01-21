@@ -25,6 +25,7 @@ describe("GET /api/topics Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.topics).toBeInstanceOf(Array);
+        expect(res.body.topics.length).toBeGreaterThan(0);
         res.body.topics.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -42,6 +43,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -60,6 +62,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
         res.body.articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -159,6 +162,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(1);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([expect.objectContaining({ topic: "cats" })])
@@ -172,6 +176,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(11);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([expect.objectContaining({ topic: "mitch" })])
@@ -185,6 +190,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(6);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([
@@ -255,6 +261,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comments).toBeInstanceOf(Array);
+        expect(res.body.comments.length).toBeGreaterThan(0);
         res.body.comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -275,6 +282,7 @@ describe("GET /api/users Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.users).toBeInstanceOf(Array);
+        expect(res.body.users.length).toBeGreaterThan(0);
         res.body.users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
@@ -288,6 +296,7 @@ describe("GET /api/users Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.user).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.user).length).toBeGreaterThan(0);
         expect(res.body.user).toMatchObject({
           username: expect.any(String),
           avatar_url: expect.any(String),
@@ -310,6 +319,7 @@ describe("POST /api/articles Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Array);
+        expect(res.body.article.length).toBeGreaterThan(0);
         res.body.article.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -330,8 +340,9 @@ describe("POST /api/articles Tests", () => {
       .send({ username: "butter_bridge", body: "This is a new comment!" })
       .expect(201)
       .then((res) => {
-        expect(res.body.newComment).toBeInstanceOf(Array);
-        res.body.newComment.forEach((comment) => {
+        expect(res.body.comment).toBeInstanceOf(Array);
+        expect(res.body.comment.length).toBeGreaterThan(0);
+        res.body.comment.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
             body: expect.any(String),
@@ -341,7 +352,7 @@ describe("POST /api/articles Tests", () => {
             created_at: expect.any(String),
           });
         });
-        expect(res.body.newComment).toEqual(
+        expect(res.body.comment).toEqual(
           expect.arrayContaining([
             expect.objectContaining({ body: "This is a new comment!" }),
           ])
@@ -361,6 +372,7 @@ describe("POST /api/topics Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.topic).toBeInstanceOf(Array);
+        expect(res.body.topic.length).toBeGreaterThan(0);
         res.body.topic.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -383,6 +395,7 @@ describe("POST /api/users Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.user).toBeInstanceOf(Array);
+        expect(res.body.user.length).toBeGreaterThan(0);
         res.body.user.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
@@ -403,6 +416,7 @@ describe("PATCH /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -422,6 +436,7 @@ describe("PATCH /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -430,6 +445,27 @@ describe("PATCH /api/articles Tests", () => {
           body: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
+        });
+      });
+  });
+  test("/api/articles/:article_id - Status 200: If patch request is empty, return the unchanged article to the user", () => {
+    const voteUpdate = {};
+    return request(app)
+      .patch("/api/articles/1")
+      .send(voteUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.article).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
+        expect(res.body.article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
         });
       });
   });
@@ -444,6 +480,7 @@ describe("PATCH /api/comments", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
         expect(res.body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -462,6 +499,26 @@ describe("PATCH /api/comments", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
+        expect(res.body.comment).toMatchObject({
+          comment_id: expect.any(Number),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          author: expect.any(String),
+          article_id: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("/api/comments/:comment_id - Status 200: If patch request is empty, return the unchanged article to the user", () => {
+    const voteUpdate = {};
+    return request(app)
+      .patch("/api/comments/1")
+      .send(voteUpdate)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Object);
+        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
         expect(res.body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -598,6 +655,32 @@ describe("GET - Error Testing", () => {
         expect(res.body.msg).toEqual("Not found");
       });
   });
+  test("/api/articles/:article_id/comments - Status 404: Returns a 404 error when a valid but non-existant article_id is input as a query", () => {
+    return request(app)
+      .get("/api/articles/24242/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: Returns a 400 error when an invalid ID type is put through as a query, e.g.: not-an-id instead of a valid numerical article_id", () => {
+    return request(app)
+      .get("/api/articles/not-an-id/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: Returns a 400 error when an invalid ID type is put through as a query, e.g.: not-an-id instead of a valid numerical article_id", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toEqual([]);
+        expect(res.body.comments).toBeInstanceOf(Array);
+        expect(res.body.comments).toHaveLength(0);
+      });
+  });
 });
 
 describe("POST - Error Testing", () => {
@@ -621,6 +704,76 @@ describe("POST - Error Testing", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ author: "Incorrect input" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ body: "Missing username" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 404: Returns a 404 error when a valid username which does not exist is input for the username/author field", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "not_a_user", body: "This is a new comment!" })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 404: Returns a 404 error when a valid but non-existant article_id (with valid and existing username) is input in the query", () => {
+    return request(app)
+      .post("/api/articles/2353245/comments")
+      .send({ username: "icellusedkars", body: "This is a new comment!" })
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Not found");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: Returns a 400 error when an invalid article_id is passed through as a query (but with a valid and existing username)", () => {
+    return request(app)
+      .post("/api/articles/invalid-article-id/comments")
+      .send({ username: "icellusedkars", body: "This is a new comment!" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 201: Tests that the item is still created and returns a 201 status when there are extra / additional properties that are not required", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "icellusedkars",
+        body: "This is a new comment!",
+        extra: "property",
+        not: "needed",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Array);
+        expect(res.body.comment.length).toBeGreaterThan(0);
+        res.body.comment.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
       });
   });
   test("/api/topics - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
@@ -718,16 +871,6 @@ describe("PATCH/PUT - Error Testing", () => {
         expect(res.body.msg).toEqual("Bad request");
       });
   });
-  test("/api/articles/:article_id - Status 400: Malformed body / Missing required fields returns an error 400", () => {
-    const voteUpdate = {};
-    return request(app)
-      .patch("/api/articles/1")
-      .send(voteUpdate)
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toEqual("Bad request");
-      });
-  });
   test("/api/comments/:comment_id - Status 404: Error 404 returned if a comment ID is requested that does not exist", () => {
     const voteUpdate = { inc_votes: 1 };
     return request(app)
@@ -742,16 +885,6 @@ describe("PATCH/PUT - Error Testing", () => {
     const voteUpdate = { inc_votes: "Incorrect input" };
     return request(app)
       .patch("/api/comments/3")
-      .send(voteUpdate)
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toEqual("Bad request");
-      });
-  });
-  test("/api/comments/:comment_id - Status 400: Malformed body / Missing required fields returns an error 400", () => {
-    const voteUpdate = {};
-    return request(app)
-      .patch("/api/comments/4")
       .send(voteUpdate)
       .expect(400)
       .then((res) => {

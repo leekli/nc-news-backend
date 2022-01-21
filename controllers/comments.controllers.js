@@ -3,6 +3,7 @@
 const {
   removeCommentById,
   updateCommentById,
+  fetchCommentById,
 } = require("../models/comments.models.js");
 
 const { checkCommentExists } = require("../db/utils/utils.js");
@@ -29,15 +30,22 @@ exports.deleteCommentById = (req, res, next) => {
 // patchCommentById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.patchCommentById = (req, res, next) => {
   const { comment_id } = req.params;
+  const comment = req.body;
 
   return checkCommentExists(comment_id)
     .then((commentExists) => {
       if (commentExists) {
-        return updateCommentById(comment_id, req.body).then(
-          (updatedComment) => {
-            res.status(200).send({ comment: updatedComment });
-          }
-        );
+        if (Object.keys(comment).length !== 0) {
+          return updateCommentById(comment_id, req.body).then(
+            (updatedComment) => {
+              res.status(200).send({ comment: updatedComment });
+            }
+          );
+        } else if (Object.keys(comment).length === 0) {
+          return fetchCommentById(comment_id).then((requestedComment) => {
+            res.status(200).send({ comment: requestedComment });
+          });
+        }
       } else {
         return Promise.reject({ status: 404, msg: "Not found" });
       }
