@@ -31,7 +31,7 @@
     "description": "serves an array of the specified article by article_id",
     "queries": [],
     "exampleResponse": {
-      "articles": [
+      "article": [
         {
           "article_id": 2,
           "title": "Seafood substitutions are increasing",
@@ -134,7 +134,7 @@
     "description": "posts a new user to the database",
     "queries": [],
     "exampleResponse": {
-      "topic": [
+      "user": [
         {
           "username": "username",
           "name": "User's name",
