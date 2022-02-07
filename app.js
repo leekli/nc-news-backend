@@ -1,5 +1,6 @@
 // app.js - File which sets up the Express server, and Express routers and error handling
 
+const cors = require("cors");
 const express = require("express");
 const apiRouter = require("./routers/app.router.js");
 
@@ -12,6 +13,9 @@ const {
 
 // Initalise express server
 const app = express();
+
+// Initalise cors middleware
+app.use(cors());
 
 // Use express.json() to deal with JSON in endpoint requests
 app.use(express.json());
