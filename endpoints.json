@@ -78,7 +78,7 @@
       "user": [
         {
           "username": "weegembump",
-          "avatar_id": "https://www.link.com/avatar_link.png",
+          "avatar_url": "https://www.link.com/avatar_link.png",
           "name": "Users name"
         }
       ]
@@ -125,7 +125,7 @@
       "topic": [
         {
           "slug": "Topic title",
-          "Desription": "Description of new topic title here"
+          "description": "Description of new topic title here"
         }
       ]
     }
@@ -138,7 +138,7 @@
         {
           "username": "username",
           "name": "User's name",
-          "avatar_id": "https://www.link.com/avatar_link.png"
+          "avatar_url": "https://www.link.com/avatar_link.png"
         }
       ]
     }
