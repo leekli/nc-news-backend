@@ -155,6 +155,39 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
+  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("search=the")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
+        expect(res.body.articles).toHaveLength(3);
+      });
+  });
+  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("search=mitch")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
+        expect(res.body.articles).toHaveLength(3);
+      });
+  });
+  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+    return request(app)
+      .get("/api/articles")
+      .query("search=catspiracy")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles).toBeInstanceOf(Array);
+        expect(res.body.articles.length).toBeGreaterThan(0);
+        expect(res.body.articles).toHaveLength(1);
+      });
+  });
   test("/api/articles?topic=cats - Status 200: Returns the results from articles which only contain 'cats' in the topic", () => {
     return request(app)
       .get("/api/articles")
@@ -774,6 +807,14 @@ describe("GET - Error Testing", () => {
         expect(res.body.comments).toEqual([]);
         expect(res.body.comments).toBeInstanceOf(Array);
         expect(res.body.comments).toHaveLength(0);
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 400: Returns a status 400 error is the sort_by is not valid", () => {
+    return request(app)
+      .get("/api/articles/1/comments?sort_by=author")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
       });
   });
 });

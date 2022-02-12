@@ -18,10 +18,10 @@ const {
 
 // getArticles function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic, author } = req.query;
+  const { sort_by, order, topic, author, search } = req.query;
 
   if (topic === undefined && author === undefined) {
-    fetchArticles(sort_by, order, topic, author)
+    fetchArticles(sort_by, order, topic, author, search)
       .then((allArticles) => {
         res.status(200).send({ articles: allArticles });
       })
@@ -32,7 +32,7 @@ exports.getArticles = (req, res, next) => {
     return checkTopicExists(topic)
       .then((topicExists) => {
         if (topicExists) {
-          return fetchArticles(sort_by, order, topic, author).then(
+          return fetchArticles(sort_by, order, topic, author, search).then(
             (allArticles) => {
               res.status(200).send({ articles: allArticles });
             }
@@ -48,7 +48,7 @@ exports.getArticles = (req, res, next) => {
     return checkUserExists(author)
       .then((userExists) => {
         if (userExists) {
-          return fetchArticles(sort_by, order, topic, author).then(
+          return fetchArticles(sort_by, order, topic, author, search).then(
             (allArticles) => {
               res.status(200).send({ articles: allArticles });
             }

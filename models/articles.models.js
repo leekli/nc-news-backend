@@ -6,7 +6,8 @@ exports.fetchArticles = (
   sort_by = "created_at",
   order = "DESC",
   topic,
-  author
+  author,
+  search
 ) => {
   const allowedSortBys = [
     "title",
@@ -39,6 +40,9 @@ exports.fetchArticles = (
   } else if (author) {
     queryValues.push(topic);
     queryStr += ` WHERE articles.author = '${author}' GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+  } else if (search) {
+    queryValues.push(search);
+    queryStr += ` WHERE articles.title ILIKE '%${search}%' GROUP BY articles.article_id;`;
   } else {
     queryStr += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
   }
