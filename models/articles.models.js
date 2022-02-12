@@ -83,10 +83,16 @@ exports.updateArticleById = (article_id, articleToUpdate) => {
   }
 };
 
-exports.fetchCommentsByArticleId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id, sort_by = "votes") => {
+  const allowedSortBys = ["votes", "created_at"];
+
+  if (!allowedSortBys.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
   return db
     .query(
-      `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1;`,
+      `SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1 ORDER BY ${sort_by} DESC;`,
       [article_id]
     )
     .then((result) => {

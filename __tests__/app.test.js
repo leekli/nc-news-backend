@@ -273,6 +273,28 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
+  test("/api/articles/:article_id/comments - Status 200: Returns the comments, ordered by 'votes', should return comments with highest votes first in descending order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .query("sort_by=created_at")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 200: Returns the comments, ordered by 'votes', should return comments with highest votes first in descending order", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .query("sort_by=votes")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
 });
 
 describe("GET /api/users Tests", () => {

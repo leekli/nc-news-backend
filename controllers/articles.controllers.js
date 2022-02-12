@@ -115,13 +115,16 @@ exports.patchArticleById = (req, res, next) => {
 // getCommentsByArticleId function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
+  const { sort_by } = req.query;
 
   return checkArticleExists(article_id)
     .then((articleExists) => {
       if (articleExists) {
-        return fetchCommentsByArticleId(article_id).then((comments) => {
-          res.status(200).send({ comments: comments });
-        });
+        return fetchCommentsByArticleId(article_id, sort_by).then(
+          (comments) => {
+            res.status(200).send({ comments: comments });
+          }
+        );
       } else {
         return Promise.reject({ status: 404, msg: "Not found" });
       }

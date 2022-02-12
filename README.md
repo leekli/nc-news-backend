@@ -1,18 +1,32 @@
-# **NorthCoders News API** 🗞
+# **NorthCoders News - Back End API** 🗞
 
-## **Built by:** Lee Kirkham
+## **Portfolio Project - Back End**
 
 ---
 
-## **News API** - Live version: https://lee-nc-news.herokuapp.com/api/
+## **Built by:** Lee Kirkham (2022)
+
+---
+
+## **Back-End**
+
+- Back-end - Hosted version Link: https://lee-nc-news.herokuapp.com/
+- Back-End - Git-Hub Repo Link: https://github.com/leekli/nc-news
+
+## **Front-End (For this Back-End API)**
+
+- Front-End - Hosted version Link: https://fe-nc-news-app.netlify.app/
+- Front-End - Git-Hub Repo Link: https://github.com/leekli/fe-nc-news
 
 ---
 
 ## **Description**
 
-A 'News API' build using Node.js, using Express server and a PostgreSQL database.
+A 'News API' build using Node.js, Express.js server and a PostgreSQL database.
 
 All endpoints can be found in the `endpoints.json` file or go to https://lee-nc-news.herokuapp.com/api/ which lists all endpoints which can be interacted with.
+
+There is a front-end app available for this API, which will allow you to interact with it, available at: https://fe-nc-news-app.netlify.app/
 
 ---
 
