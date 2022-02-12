@@ -1,6 +1,6 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "serves up a JSON representation of all the available endpoints of the api"
   },
   "GET /api/topics": {
     "description": "serves an array of all topics",
@@ -11,7 +11,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all the articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["author", "topic", "sort_by", "order", "search"],
     "exampleResponse": {
       "articles": [
         {
@@ -47,7 +47,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of all comments for a specified article_id",
-    "queries": [],
+    "queries": ["sort_by"],
     "exampleResponse": {
       "comments": [
         {
