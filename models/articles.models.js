@@ -1,5 +1,3 @@
-// models/articles.models.js - Models file for dealing with requests from articles.controllers.js
-
 const db = require("../db/connection.js");
 
 exports.fetchArticles = (

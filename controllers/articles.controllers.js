@@ -1,5 +1,3 @@
-// controllers/articles.controllers.js - Controllers file for dealing with requests from the 'articles' Router and 'articles' data table
-
 const {
   fetchArticleById,
   updateArticleById,
@@ -16,7 +14,6 @@ const {
   checkUserExists,
 } = require("../db/utils/utils.js");
 
-// getArticles function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic, author, search } = req.query;
 
@@ -63,14 +60,13 @@ exports.getArticles = (req, res, next) => {
   }
 };
 
-// getArticleById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
   fetchArticleById(article_id)
-    .then((requestedArticle) => {
-      if (requestedArticle) {
-        res.status(200).send({ article: requestedArticle });
+    .then((article) => {
+      if (article) {
+        res.status(200).send({ article: article });
       } else {
         return Promise.reject({ status: 404, msg: "Not found" });
       }
@@ -80,7 +76,6 @@ exports.getArticleById = (req, res, next) => {
     });
 };
 
-// patchArticleById function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const article = req.body;
@@ -112,7 +107,6 @@ exports.patchArticleById = (req, res, next) => {
     });
 };
 
-// getCommentsByArticleId function - Retrieves data from articles models file, and returns a status code of 200 and the data if successful
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
@@ -134,7 +128,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
     });
 };
 
-// postCommentByArticleId function - Retrieves data from articles models file, and returns a status code of 201 and the data if successful
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
@@ -165,7 +158,6 @@ exports.postCommentByArticleId = (req, res, next) => {
     });
 };
 
-// postArticle function - Retrieves data from articles models file, and returns a status code of 201 and the data if successful
 exports.postArticle = (req, res, next) => {
   const newArticle = req.body;
 
@@ -178,7 +170,6 @@ exports.postArticle = (req, res, next) => {
     });
 };
 
-// deleteArticleById function - Retrieves data from articles models file, and returns a status code of 204 if deletion was successful
 exports.deleteArticleById = (req, res, next) => {
   const { article_id } = req.params;
 

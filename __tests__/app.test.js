@@ -43,7 +43,6 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
