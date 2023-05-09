@@ -3,6 +3,7 @@ const db = require("../db/connection.js");
 const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app.js");
+const endPointsList = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -14,6 +15,7 @@ describe("GET /api Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.allEndPoints).toBeInstanceOf(Object);
+        expect(res.body.allEndPoints).toEqual(endPointsList);
       });
   });
 });
@@ -43,15 +45,15 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
-        expect(res.body.article).toMatchObject({
-          article_id: expect.any(Number),
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          comment_count: expect.any(String),
+        expect(res.body.article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: "2",
         });
       });
   });
@@ -61,14 +63,13 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
+        expect(res.body.articles).toHaveLength(12);
         res.body.articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
             title: expect.any(String),
             topic: expect.any(String),
             author: expect.any(String),
-            body: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
             comment_count: expect.any(String),

@@ -19,8 +19,8 @@ exports.getArticles = (req, res, next) => {
 
   if (topic === undefined && author === undefined) {
     fetchArticles(sort_by, order, topic, author, search)
-      .then((allArticles) => {
-        res.status(200).send({ articles: allArticles });
+      .then((articles) => {
+        res.status(200).send({ articles });
       })
       .catch((err) => {
         next(err);
@@ -30,8 +30,8 @@ exports.getArticles = (req, res, next) => {
       .then((topicExists) => {
         if (topicExists) {
           return fetchArticles(sort_by, order, topic, author, search).then(
-            (allArticles) => {
-              res.status(200).send({ articles: allArticles });
+            (articles) => {
+              res.status(200).send({ articles });
             }
           );
         } else {
@@ -46,8 +46,8 @@ exports.getArticles = (req, res, next) => {
       .then((userExists) => {
         if (userExists) {
           return fetchArticles(sort_by, order, topic, author, search).then(
-            (allArticles) => {
-              res.status(200).send({ articles: allArticles });
+            (articles) => {
+              res.status(200).send({ articles });
             }
           );
         } else {
