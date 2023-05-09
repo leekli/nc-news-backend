@@ -25,7 +25,7 @@ describe("GET /api/topics Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.topics).toBeInstanceOf(Array);
-        expect(res.body.topics.length).toBeGreaterThan(0);
+        expect(res.body.topics).toHaveLength(3);
         res.body.topics.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),

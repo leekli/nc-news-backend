@@ -1,5 +1,3 @@
-// models/topics.models.js - Models file for dealing with requests from topics.controllers.js
-
 const db = require("../db/connection.js");
 
 exports.fetchTopics = () => {
@@ -13,7 +11,7 @@ exports.addTopic = (newTopic) => {
 
   return db
     .query(
-      `INSERT INTO topics (slug, description) VALUES ($1, $2) RETURNING *`,
+      `INSERT INTO topics (slug, description) VALUES ($1, $2) RETURNING *;`,
       [slug, description]
     )
     .then((result) => {
