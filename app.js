@@ -1,5 +1,3 @@
-// app.js - File which sets up the Express server, and Express routers and error handling
-
 const cors = require("cors");
 const express = require("express");
 const apiRouter = require("./routers/app.router.js");

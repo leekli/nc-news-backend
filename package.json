@@ -1,28 +1,28 @@
 {
   "name": "be-nc-news",
-  "version": "1.0.0",
+  "version": "1.5",
   "description": "bc-nc-news",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "output-dev": "psql -f view-dev-db.sql > view-dev-db.txt",
     "output-test": "psql -f view-test-db.sql > view-test-db.txt",
-    "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get DATABASE_URL) npm run seed",
+    "seed:prod": "NODE_ENV=production npm run seed",
     "start": "node listen.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/northcoders/be-nc-news.git"
+    "url": "git+https://github.com/leekli/be-nc-news.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lee Kirkham",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/northcoders/be-nc-news/issues"
+    "url": "https://github.com/leekli/be-nc-news/issues"
   },
-  "homepage": "https://github.com/northcoders/be-nc-news#readme",
+  "homepage": "https://github.com/leekli/be-nc-news#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^14.1.0",
@@ -32,17 +32,13 @@
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "jest-sorted": "^1.0.14",
-    "supertest": "^6.2.1"
+    "supertest": "^6.3.3"
   },
   "jest": {
     "setupFilesAfterEnv": [
       "jest-sorted"
     ]
-  },
-  "engines": {
-    "node": "17.x",
-    "npm": "8.x"
   }
 }

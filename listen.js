@@ -1,5 +1,3 @@
-// listen.js - Function which sets up the port for the server to listen on
-
 const app = require("./app.js");
 
 const { PORT = 9090 } = process.env;

@@ -13,13 +13,8 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePsqlErrors = (err, req, res, next) => {
-  if (
-    err.code === "22P02" ||
-    err.code === "23502" ||
-    err.code === "42703" ||
-    err.code === "42P01" ||
-    err.code === "23503"
-  ) {
+  const psqlErrorList = ["22P02", "23502", "42703", "42P01", "23503"];
+  if (psqlErrorList.includes(err.code)) {
     res.status(400).send({ msg: "Bad request" });
   } else {
     next(err);
