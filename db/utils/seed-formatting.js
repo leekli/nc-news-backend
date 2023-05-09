@@ -1,15 +1,13 @@
-// db/utils/seed-formatting.js - Functions to format data during the database seeding process
-
-exports.formatTopicsData = (topicData) => {
-  const formattedTopics = topicData.map((topic) => [
+exports.formatTopicsData = (topicsData) => {
+  const formattedTopics = topicsData.map((topic) => [
     topic.description,
     topic.slug,
   ]);
   return formattedTopics;
 };
 
-exports.formatUsersData = (userData) => {
-  const formattedUsers = userData.map((user) => [
+exports.formatUsersData = (usersData) => {
+  const formattedUsers = usersData.map((user) => [
     user.username,
     user.name,
     user.avatar_url,
@@ -17,8 +15,8 @@ exports.formatUsersData = (userData) => {
   return formattedUsers;
 };
 
-exports.formatArticlesData = (articleData) => {
-  return articleData.map((article) => {
+exports.formatArticlesData = (articlesData) => {
+  return articlesData.map((article) => {
     return [
       article.title,
       article.topic,
@@ -30,8 +28,8 @@ exports.formatArticlesData = (articleData) => {
   });
 };
 
-exports.formatCommentsData = (commentData) => {
-  return commentData.map((comment) => {
+exports.formatCommentsData = (commentsData) => {
+  return commentsData.map((comment) => {
     return [
       comment.body,
       comment.votes,

@@ -1,4 +1,4 @@
-// db/seeds/seed.js - Function to seed the database, using postgres-node and pg-format
+// Function to seed the database, using postgres-node and pg-format
 
 const db = require("../connection.js");
 const format = require("pg-format");
@@ -72,35 +72,35 @@ const seed = (data) => {
       // Seed the 4 tables with data
       .then(() => {
         const formattedTopics = formatTopicsData(topicData);
-        const sql = format(
+        const sqlString = format(
           `INSERT INTO topics (description, slug) VALUES %L RETURNING *;`,
           formattedTopics
         );
-        return db.query(sql);
+        return db.query(sqlString);
       })
       .then(() => {
         const formattedUsers = formatUsersData(userData);
-        const sql = format(
+        const sqlString = format(
           `INSERT INTO users (username, name, avatar_url) VALUES %L RETURNING *;`,
           formattedUsers
         );
-        return db.query(sql);
+        return db.query(sqlString);
       })
       .then(() => {
         const formattedArticles = formatArticlesData(articleData);
-        const sql = format(
+        const sqlString = format(
           `INSERT INTO articles (title, topic, author, body, created_at, votes) VALUES %L RETURNING *;`,
           formattedArticles
         );
-        return db.query(sql);
+        return db.query(sqlString);
       })
       .then(() => {
         const formattedComments = formatCommentsData(commentData);
-        const sql = format(
+        const sqlString = format(
           `INSERT INTO comments (body, votes, author, article_id, created_at) VALUES %L RETURNING *;`,
           formattedComments
         );
-        return db.query(sql);
+        return db.query(sqlString);
       })
   );
 };

@@ -9,13 +9,13 @@ const {
   handle404s,
 } = require("./errors/errors.js");
 
-// Initalise express server
+// Initalise Express server
 const app = express();
 
-// Initalise cors middleware
+// CORS Middleware
 app.use(cors());
 
-// Use express.json() to deal with JSON in endpoint requests
+// JSON Middleware
 app.use(express.json());
 
 // Router Endpoints
