@@ -1,5 +1,3 @@
-// controllers/users.controllers.js - Controllers file for dealing with requests from the 'users' Router and 'users' data table
-
 const { checkUserExists } = require("../db/utils/utils.js");
 
 const {
@@ -10,12 +8,10 @@ const {
 
 exports.getUsers = (req, res, next) => {
   fetchUsers()
-    .then((allUsers) => {
-      res.status(200).send({ users: allUsers });
+    .then((users) => {
+      res.status(200).send({ users });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.getUserByUsername = (req, res, next) => {
@@ -31,9 +27,7 @@ exports.getUserByUsername = (req, res, next) => {
         return Promise.reject({ status: 404, msg: "Not found" });
       }
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.postUser = (req, res, next) => {
@@ -50,7 +44,5 @@ exports.postUser = (req, res, next) => {
         return Promise.reject({ status: 403, msg: "Already exists" });
       }
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
