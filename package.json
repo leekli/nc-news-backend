@@ -1,7 +1,7 @@
 {
   "name": "be-nc-news",
   "version": "1.5",
-  "description": "bc-nc-news",
+  "description": "Lee's NC News Back End Project",
   "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leekli/be-nc-news.git"
+    "url": "git+https://github.com/leekli/nc-news-backend.git"
   },
   "keywords": [],
   "author": "Lee Kirkham",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/leekli/be-nc-news/issues"
+    "url": "https://github.com/leekli/nc-news-backendissues"
   },
-  "homepage": "https://github.com/leekli/be-nc-news#readme",
+  "homepage": "https://github.com/leekli/nc-news-backend#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^14.1.0",
