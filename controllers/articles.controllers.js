@@ -8,55 +8,37 @@ const {
   removeArticle,
 } = require("../models/articles.models.js");
 
-const {
-  checkArticleExists,
-  checkTopicExists,
-  checkUserExists,
-} = require("../db/utils/utils.js");
+const { checkExists } = require("../db/utils/utils.js");
 
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic, author, search } = req.query;
 
-  if (topic === undefined && author === undefined) {
+  if (!topic && !author) {
     fetchArticles(sort_by, order, topic, author, search)
       .then((articles) => {
         res.status(200).send({ articles });
       })
-      .catch((err) => {
-        next(err);
-      });
-  } else if (topic !== undefined) {
-    return checkTopicExists(topic)
-      .then((topicExists) => {
-        if (topicExists) {
-          return fetchArticles(sort_by, order, topic, author, search).then(
-            (articles) => {
-              res.status(200).send({ articles });
-            }
-          );
-        } else {
-          return Promise.reject({ status: 404, msg: "Not found" });
-        }
+      .catch(next);
+  } else if (topic) {
+    return checkExists("topics", "slug", topic)
+      .then(() => {
+        return fetchArticles(sort_by, order, topic, author, search).then(
+          (articles) => {
+            res.status(200).send({ articles });
+          }
+        );
       })
-      .catch((err) => {
-        next(err);
-      });
-  } else if (author !== undefined) {
-    return checkUserExists(author)
-      .then((userExists) => {
-        if (userExists) {
-          return fetchArticles(sort_by, order, topic, author, search).then(
-            (articles) => {
-              res.status(200).send({ articles });
-            }
-          );
-        } else {
-          return Promise.reject({ status: 404, msg: "Not found" });
-        }
+      .catch(next);
+  } else if (author) {
+    return checkExists("users", "username", author)
+      .then(() => {
+        return fetchArticles(sort_by, order, topic, author, search).then(
+          (articles) => {
+            res.status(200).send({ articles });
+          }
+        );
       })
-      .catch((err) => {
-        next(err);
-      });
+      .catch(next);
   }
 };
 
@@ -65,67 +47,35 @@ exports.getArticleById = (req, res, next) => {
 
   fetchArticleById(article_id)
     .then((article) => {
-      if (article) {
-        res.status(200).send({ article: article });
-      } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
-      }
+      res.status(200).send({ article: article });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const article = req.body;
 
-  return checkArticleExists(article_id)
-    .then((articleExists) => {
-      if (articleExists) {
-        if (Object.keys(article).length !== 0) {
-          return updateArticleById(article_id, article).then(
-            (updatedArticle) => {
-              res.status(200).send({ article: updatedArticle });
-            }
-          );
-        } else if (Object.keys(article).length === 0) {
-          return fetchArticleById(article_id).then((requestedArticle) => {
-            if (requestedArticle) {
-              res.status(200).send({ article: requestedArticle });
-            } else {
-              return Promise.reject({ status: 404, msg: "Not found" });
-            }
-          });
-        }
-      } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
-      }
+  return checkExists("articles", "article_id", article_id)
+    .then(() => {
+      return updateArticleById(article_id, article).then((updatedArticle) => {
+        res.status(200).send({ article: updatedArticle });
+      });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
 
-  return checkArticleExists(article_id)
-    .then((articleExists) => {
-      if (articleExists) {
-        return fetchCommentsByArticleId(article_id, sort_by).then(
-          (comments) => {
-            res.status(200).send({ comments: comments });
-          }
-        );
-      } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
-      }
+  return checkExists("articles", "article_id", article_id)
+    .then(() => {
+      return fetchCommentsByArticleId(article_id, sort_by).then((comments) => {
+        res.status(200).send({ comments: comments });
+      });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.postCommentByArticleId = (req, res, next) => {
@@ -133,29 +83,19 @@ exports.postCommentByArticleId = (req, res, next) => {
   const { username, body } = req.body;
   const newComment = req.body;
 
-  return checkArticleExists(article_id)
-    .then((articleExists) => {
-      if (articleExists) {
-        if (username === undefined || body === undefined) {
-          return Promise.reject({ status: 400, msg: "Bad request" });
-        } else {
-          return checkUserExists(username).then((userExists) => {
-            if (userExists) {
-              return addComment(article_id, newComment).then((newComment) => {
-                res.status(201).send({ comment: newComment });
-              });
-            } else {
-              return Promise.reject({ status: 404, msg: "Not found" });
-            }
-          });
-        }
+  return checkExists("articles", "article_id", article_id)
+    .then(() => {
+      if (!username || !body) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
       } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
+        return checkExists("users", "username", username).then(() => {
+          return addComment(article_id, newComment).then((newComment) => {
+            res.status(201).send({ comment: newComment });
+          });
+        });
       }
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.postArticle = (req, res, next) => {
@@ -165,25 +105,17 @@ exports.postArticle = (req, res, next) => {
     .then((article) => {
       res.status(201).send({ article });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.deleteArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
-  return checkArticleExists(article_id)
-    .then((articleExists) => {
-      if (articleExists) {
-        return removeArticle(article_id).then((deletedArticle) => {
-          res.status(204).send({});
-        });
-      } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
-      }
+  return checkExists("articles", "article_id", article_id)
+    .then(() => {
+      return removeArticle(article_id).then(() => {
+        res.sendStatus(204);
+      });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };

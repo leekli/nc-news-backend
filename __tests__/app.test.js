@@ -527,27 +527,6 @@ describe("PATCH /api/articles Tests", () => {
         });
       });
   });
-  test("/api/articles/:article_id - Status 200: If patch request is empty, return the unchanged article to the user", () => {
-    const voteUpdate = {};
-    return request(app)
-      .patch("/api/articles/1")
-      .send(voteUpdate)
-      .expect(200)
-      .then((res) => {
-        expect(res.body.article).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
-        expect(res.body.article).toMatchObject({
-          article_id: expect.any(Number),
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          comment_count: expect.any(String),
-        });
-      });
-  });
   test("/api/articles/:article_id - Status 200: Updates the body of a specified article by :article_id", () => {
     const bodyUpdate = { body: "This is a new body to an article!" };
     return request(app)
