@@ -54,11 +54,11 @@ exports.getArticleById = (req, res, next) => {
 
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  const article = req.body;
+  const articleBody = req.body;
 
   return checkExists("articles", "article_id", article_id)
     .then(() => {
-      return updateArticleById(article_id, article).then((article) => {
+      return updateArticleById(article_id, articleBody).then((article) => {
         res.status(200).send({ article });
       });
     })
