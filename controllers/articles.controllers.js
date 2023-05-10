@@ -47,7 +47,7 @@ exports.getArticleById = (req, res, next) => {
 
   fetchArticleById(article_id)
     .then((article) => {
-      res.status(200).send({ article: article });
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -80,20 +80,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
 exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  const { username, body } = req.body;
+  const { username } = req.body;
   const newComment = req.body;
 
   return checkExists("articles", "article_id", article_id)
     .then(() => {
-      if (!username || !body) {
-        return Promise.reject({ status: 400, msg: "Bad request" });
-      } else {
-        return checkExists("users", "username", username).then(() => {
-          return addComment(article_id, newComment).then((comment) => {
-            res.status(201).send({ comment });
-          });
+      return checkExists("users", "username", username).then(() => {
+        return addComment(article_id, newComment).then((comment) => {
+          res.status(201).send({ comment });
         });
-      }
+      });
     })
     .catch(next);
 };

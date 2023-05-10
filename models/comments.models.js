@@ -1,5 +1,3 @@
-// models/comments.models.js - Models file for dealing with requests from comments.controllers.js
-
 const db = require("../db/connection.js");
 
 exports.removeCommentById = (comment_id) => {

@@ -107,6 +107,10 @@ exports.fetchCommentsByArticleId = (article_id, sort_by = "votes") => {
 exports.addComment = (article_id, newComment) => {
   const { username, body } = newComment;
 
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
   return db
     .query(
       `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,

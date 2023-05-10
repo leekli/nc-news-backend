@@ -1,5 +1,3 @@
-// models/users.models.js - Models file for dealing with requests from users.controllers.js
-
 const db = require("../db/connection.js");
 
 exports.fetchUsers = () => {

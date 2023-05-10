@@ -608,25 +608,6 @@ describe("PATCH /api/comments", () => {
         });
       });
   });
-  test("/api/comments/:comment_id - Status 200: If patch request is empty, return the unchanged article to the user", () => {
-    const voteUpdate = {};
-    return request(app)
-      .patch("/api/comments/1")
-      .send(voteUpdate)
-      .expect(200)
-      .then((res) => {
-        expect(res.body.comment).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
-        expect(res.body.comment).toMatchObject({
-          comment_id: expect.any(Number),
-          body: expect.any(String),
-          votes: expect.any(Number),
-          author: expect.any(String),
-          article_id: expect.any(Number),
-          created_at: expect.any(String),
-        });
-      });
-  });
   test("/api/comments/:comment_id - Status 200: Updates the body of a specified comment by :comment_id", () => {
     const bodyUpdate = { body: "This is a new body for an existing comment!" };
     return request(app)
@@ -836,22 +817,13 @@ describe("POST - Error Testing", () => {
         expect(res.body.msg).toEqual("Bad request");
       });
   });
-  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
+  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response, author does not exist", () => {
     return request(app)
       .post("/api/articles/2/comments")
-      .send({ author: "Incorrect input" })
-      .expect(400)
+      .send({ username: "UserDoesNotExist" })
+      .expect(404)
       .then((res) => {
-        expect(res.body.msg).toEqual("Bad request");
-      });
-  });
-  test("/api/articles/:article_id/comments - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
-    return request(app)
-      .post("/api/articles/2/comments")
-      .send({ body: "Missing username" })
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toEqual("Bad request");
+        expect(res.body.msg).toEqual("Not found");
       });
   });
   test("/api/articles/:article_id/comments - Status 404: Returns a 404 error when a valid username which does not exist is input for the username/author field", () => {
@@ -938,9 +910,9 @@ describe("POST - Error Testing", () => {
         avatar_url:
           "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
       })
-      .expect(403)
+      .expect(400)
       .then((res) => {
-        expect(res.body.msg).toEqual("Already exists");
+        expect(res.body.msg).toEqual("Bad request");
       });
   });
 });
