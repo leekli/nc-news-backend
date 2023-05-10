@@ -505,6 +505,7 @@ describe("PATCH /api/articles Tests", () => {
       .send(voteUpdate)
       .expect(200)
       .then((res) => {
+        expect(res.body.article.votes).toBe(101);
         expect(res.body.article).toBeInstanceOf(Object);
         expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
@@ -525,6 +526,7 @@ describe("PATCH /api/articles Tests", () => {
       .send(voteUpdate)
       .expect(200)
       .then((res) => {
+        expect(res.body.article.votes).toBe(-100);
         expect(res.body.article).toBeInstanceOf(Object);
         expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
@@ -991,6 +993,16 @@ describe("PATCH/PUT - Error Testing", () => {
     const voteUpdate = { inc_votes: "Incorrect input" };
     return request(app)
       .patch("/api/articles/1")
+      .send(voteUpdate)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Bad request");
+      });
+  });
+  test("/api/articles/:article_id - Status 400: Empty request body on PATCH request", () => {
+    const voteUpdate = {};
+    return request(app)
+      .patch("/api/articles/2")
       .send(voteUpdate)
       .expect(400)
       .then((res) => {

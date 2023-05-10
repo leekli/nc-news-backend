@@ -58,8 +58,8 @@ exports.patchArticleById = (req, res, next) => {
 
   return checkExists("articles", "article_id", article_id)
     .then(() => {
-      return updateArticleById(article_id, article).then((updatedArticle) => {
-        res.status(200).send({ article: updatedArticle });
+      return updateArticleById(article_id, article).then((article) => {
+        res.status(200).send({ article });
       });
     })
     .catch(next);
@@ -72,7 +72,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
   return checkExists("articles", "article_id", article_id)
     .then(() => {
       return fetchCommentsByArticleId(article_id, sort_by).then((comments) => {
-        res.status(200).send({ comments: comments });
+        res.status(200).send({ comments });
       });
     })
     .catch(next);
@@ -89,8 +89,8 @@ exports.postCommentByArticleId = (req, res, next) => {
         return Promise.reject({ status: 400, msg: "Bad request" });
       } else {
         return checkExists("users", "username", username).then(() => {
-          return addComment(article_id, newComment).then((newComment) => {
-            res.status(201).send({ comment: newComment });
+          return addComment(article_id, newComment).then((comment) => {
+            res.status(201).send({ comment });
           });
         });
       }
