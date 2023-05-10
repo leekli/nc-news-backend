@@ -1,4 +1,4 @@
-const { checkUserExists } = require("../db/utils/utils.js");
+const { checkUserExists, checkExists } = require("../db/utils/utils.js");
 
 const {
   fetchUsers,
@@ -17,15 +17,9 @@ exports.getUsers = (req, res, next) => {
 exports.getUserByUsername = (req, res, next) => {
   const { username } = req.params;
 
-  return checkUserExists(username)
-    .then((userExists) => {
-      if (userExists) {
-        return fetchUserByUsername(username).then((user) => {
-          res.status(200).send({ user: user });
-        });
-      } else {
-        return Promise.reject({ status: 404, msg: "Not found" });
-      }
+  fetchUserByUsername(username)
+    .then((user) => {
+      res.status(200).send({ user: user });
     })
     .catch(next);
 };
