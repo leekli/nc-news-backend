@@ -288,6 +288,16 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
+  test("/api/articles/:article_id/comments - Status 200: Returns the comments, ordered by default with the most recent comments first", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
   test("/api/articles/:article_id/comments - Status 200: Returns an array of comments for the given article_id which is input as a query - Using article 1 for the test", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -302,6 +312,7 @@ describe("GET /api/articles Tests", () => {
             created_at: expect.any(String),
             author: expect.any(String),
             body: expect.any(String),
+            article_id: expect.any(Number),
           });
         });
       });
