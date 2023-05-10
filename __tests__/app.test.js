@@ -14,8 +14,8 @@ describe("GET /api Tests", () => {
       .get("/api")
       .expect(200)
       .then((res) => {
-        expect(res.body.allEndPoints).toBeInstanceOf(Object);
-        expect(res.body.allEndPoints).toEqual(endPointsList);
+        expect(res.body.endpoints).toBeInstanceOf(Object);
+        expect(res.body.endpoints).toEqual(endPointsList);
       });
   });
 });

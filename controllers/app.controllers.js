@@ -2,8 +2,8 @@ const { fetchEndPoints } = require("../models/app.models.js");
 
 exports.getEndpoints = (req, res, next) => {
   fetchEndPoints()
-    .then((allEndPoints) => {
-      res.status(200).send({ allEndPoints });
+    .then((endpoints) => {
+      res.status(200).send({ endpoints });
     })
     .catch((err) => {
       next(err);
