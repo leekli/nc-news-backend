@@ -411,6 +411,9 @@ describe("POST /api/articles Tests", () => {
               article_id: 13,
               body: "This is my test body text of the article",
               topic: "paper",
+              created_at: expect.any(String),
+              votes: 0,
+              comment_count: "0",
             }),
           ])
         );
