@@ -14,7 +14,8 @@ describe("GET /api Tests", () => {
       .get("/api")
       .expect(200)
       .then((res) => {
-        expect(res.body.endpoints).toBeInstanceOf(Object);
+        expect(res.body).toBeInstanceOf(Object);
+        expect(res.body).toHaveProperty("endpoints");
         expect(res.body.endpoints).toEqual(endPointsList);
       });
   });
@@ -155,36 +156,33 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
-  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+  test("/api/articles - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
     return request(app)
       .get("/api/articles")
       .query("search=the")
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(3);
       });
   });
-  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+  test("/api/articles - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
     return request(app)
       .get("/api/articles")
       .query("search=mitch")
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(3);
       });
   });
-  test("/api/articles?order=asc - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
+  test("/api/articles - Status 200: Uses the search query to search for all matching characters and returns those which match", () => {
     return request(app)
       .get("/api/articles")
       .query("search=catspiracy")
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(1);
       });
   });
@@ -195,7 +193,6 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(1);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([expect.objectContaining({ topic: "cats" })])
@@ -209,7 +206,6 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(11);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([expect.objectContaining({ topic: "mitch" })])
@@ -223,7 +219,6 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles).toBeInstanceOf(Array);
-        expect(res.body.articles.length).toBeGreaterThan(0);
         expect(res.body.articles).toHaveLength(6);
         expect(res.body.articles).toEqual(
           expect.arrayContaining([
@@ -304,7 +299,7 @@ describe("GET /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comments).toBeInstanceOf(Array);
-        expect(res.body.comments.length).toBeGreaterThan(0);
+        expect(res.body.comments).toHaveLength(11);
         res.body.comments.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -328,10 +323,21 @@ describe("GET /api/articles Tests", () => {
         });
       });
   });
+
   test("/api/articles/:article_id/comments - Status 200: Returns the comments, ordered by 'votes', should return comments with highest votes first in descending order", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .query("sort_by=votes")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.comments).toBeSortedBy("votes", {
+          descending: true,
+        });
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 200: Returns the comments, ordered by 'votes' as the default sort when a sort_by is not passed", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
       .expect(200)
       .then((res) => {
         expect(res.body.comments).toBeSortedBy("votes", {
@@ -348,7 +354,7 @@ describe("GET /api/users Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.users).toBeInstanceOf(Array);
-        expect(res.body.users.length).toBeGreaterThan(0);
+        expect(res.body.users).toHaveLength(4);
         res.body.users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
@@ -364,11 +370,11 @@ describe("GET /api/users Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.user).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.user).length).toBeGreaterThan(0);
-        expect(res.body.user).toMatchObject({
-          username: expect.any(String),
-          avatar_url: expect.any(String),
-          name: expect.any(String),
+        expect(res.body.user).toEqual({
+          username: "lurker",
+          name: "do_nothing",
+          avatar_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
         });
       });
   });
@@ -387,7 +393,6 @@ describe("POST /api/articles Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Array);
-        expect(res.body.article.length).toBeGreaterThan(0);
         res.body.article.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -403,6 +408,7 @@ describe("POST /api/articles Tests", () => {
         expect(res.body.article).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
+              article_id: 13,
               body: "This is my test body text of the article",
               topic: "paper",
             }),
@@ -417,7 +423,6 @@ describe("POST /api/articles Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Array);
-        expect(res.body.comment.length).toBeGreaterThan(0);
         res.body.comment.forEach((comment) => {
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
@@ -430,9 +435,38 @@ describe("POST /api/articles Tests", () => {
         });
         expect(res.body.comment).toEqual(
           expect.arrayContaining([
-            expect.objectContaining({ body: "This is a new comment!" }),
+            expect.objectContaining({
+              comment_id: 19,
+              author: "butter_bridge",
+              body: "This is a new comment!",
+            }),
           ])
         );
+      });
+  });
+  test("/api/articles/:article_id/comments - Status 201: Tests that the item is still created and returns a 201 status when there are extra / additional properties that are not required", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "icellusedkars",
+        body: "This is a new comment!",
+        extra: "property",
+        not: "needed",
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.comment).toBeInstanceOf(Array);
+        expect(res.body.comment.length).toBeGreaterThan(0);
+        res.body.comment.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
       });
   });
 });
@@ -448,7 +482,6 @@ describe("POST /api/topics Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.topic).toBeInstanceOf(Array);
-        expect(res.body.topic.length).toBeGreaterThan(0);
         res.body.topic.forEach((topic) => {
           expect(topic).toMatchObject({
             slug: expect.any(String),
@@ -479,7 +512,6 @@ describe("POST /api/users Tests", () => {
       .expect(201)
       .then((res) => {
         expect(res.body.user).toBeInstanceOf(Array);
-        expect(res.body.user.length).toBeGreaterThan(0);
         res.body.user.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
@@ -492,6 +524,7 @@ describe("POST /api/users Tests", () => {
             expect.objectContaining({
               username: "userNameA",
               name: "Users Name a",
+              avatar_url: "",
             }),
           ])
         );
@@ -507,9 +540,7 @@ describe("PATCH /api/articles Tests", () => {
       .send(voteUpdate)
       .expect(200)
       .then((res) => {
-        expect(res.body.article.votes).toBe(101);
         expect(res.body.article).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -519,6 +550,7 @@ describe("PATCH /api/articles Tests", () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
         });
+        expect(res.body.article.votes).toBe(101);
       });
   });
   test("/api/articles/:article_id - Status 200: Test 2 - Updates the specificed article ID votes column with the value input, and responds with the updated article - Decreases article 2 votes by -100", () => {
@@ -528,9 +560,7 @@ describe("PATCH /api/articles Tests", () => {
       .send(voteUpdate)
       .expect(200)
       .then((res) => {
-        expect(res.body.article.votes).toBe(-100);
         expect(res.body.article).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -540,6 +570,7 @@ describe("PATCH /api/articles Tests", () => {
           created_at: expect.any(String),
           votes: expect.any(Number),
         });
+        expect(res.body.article.votes).toBe(-100);
       });
   });
   test("/api/articles/:article_id - Status 200: Updates the body of a specified article by :article_id", () => {
@@ -550,7 +581,6 @@ describe("PATCH /api/articles Tests", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.article).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.article).length).toBeGreaterThan(0);
         expect(res.body.article).toMatchObject({
           article_id: expect.any(Number),
           title: expect.any(String),
@@ -578,7 +608,6 @@ describe("PATCH /api/comments", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
         expect(res.body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -587,6 +616,7 @@ describe("PATCH /api/comments", () => {
           article_id: expect.any(Number),
           created_at: expect.any(String),
         });
+        expect(res.body.comment.votes).toBe(17);
       });
   });
   test("/api/comments/:comment_id - Status 200: Updates the specificed comment ID votes column with the value input, and responds with the updated comment - Test 2 - Decreases comment votes by -1", () => {
@@ -597,7 +627,6 @@ describe("PATCH /api/comments", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
         expect(res.body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -606,6 +635,7 @@ describe("PATCH /api/comments", () => {
           article_id: expect.any(Number),
           created_at: expect.any(String),
         });
+        expect(res.body.comment.votes).toBe(13);
       });
   });
   test("/api/comments/:comment_id - Status 200: Updates the body of a specified comment by :comment_id", () => {
@@ -616,7 +646,6 @@ describe("PATCH /api/comments", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comment).toBeInstanceOf(Object);
-        expect(Object.keys(res.body.comment).length).toBeGreaterThan(0);
         expect(res.body.comment).toMatchObject({
           comment_id: expect.any(Number),
           body: expect.any(String),
@@ -780,8 +809,6 @@ describe("GET - Error Testing", () => {
       .expect(200)
       .then((res) => {
         expect(res.body.comments).toEqual([]);
-        expect(res.body.comments).toBeInstanceOf(Array);
-        expect(res.body.comments).toHaveLength(0);
       });
   });
   test("/api/articles/:article_id/comments - Status 400: Returns a status 400 error is the sort_by is not valid", () => {
@@ -851,31 +878,6 @@ describe("POST - Error Testing", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toEqual("Bad request");
-      });
-  });
-  test("/api/articles/:article_id/comments - Status 201: Tests that the item is still created and returns a 201 status when there are extra / additional properties that are not required", () => {
-    return request(app)
-      .post("/api/articles/1/comments")
-      .send({
-        username: "icellusedkars",
-        body: "This is a new comment!",
-        extra: "property",
-        not: "needed",
-      })
-      .expect(201)
-      .then((res) => {
-        expect(res.body.comment).toBeInstanceOf(Array);
-        expect(res.body.comment.length).toBeGreaterThan(0);
-        res.body.comment.forEach((comment) => {
-          expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            votes: expect.any(Number),
-            author: expect.any(String),
-            article_id: expect.any(Number),
-            created_at: expect.any(String),
-          });
-        });
       });
   });
   test("/api/topics - Status 400: A malformed body / missing required fields returns a Error 400 Bad Request as a response", () => {
