@@ -1,17 +1,17 @@
-# **NorthCoders News - Back End API** 🗞
+# **Lee's News - Back End API** 🗞
 
 ## **Portfolio Project - Back End**
 
 ---
 
-## **Built by:** Lee Kirkham (2022)
+## **Built by:** Lee Kirkham (2022 & 2023)
 
 ---
 
 ## **Back-End**
 
-- Back-end - Hosted version Link: https://lee-nc-news.herokuapp.com/
-- Back-End - Git-Hub Repo Link: https://github.com/leekli/nc-news
+- Back-end - Hosted version Link: https://lee-be-nc-news.onrender.com/api
+- Back-End - Git-Hub Repo Link: https://github.com/leekli/nc-news-backend
 
 ## **Front-End (For this Back-End API)**
 
@@ -22,9 +22,9 @@
 
 ## **Description**
 
-A 'News API' build using Node.js, Express.js server and a PostgreSQL database.
+A 'News API' built with Node.js, an Express.js server and a PostgreSQL database.
 
-All endpoints can be found in the `endpoints.json` file or go to https://lee-nc-news.herokuapp.com/api/ which lists all endpoints which can be interacted with.
+All endpoints can be found in the `endpoints.json` file or going to https://lee-be-nc-news.onrender.com/api which lists all endpoints which can be interacted with.
 
 There is a front-end app available for this API, which will allow you to interact with it, available at: https://fe-nc-news-app.netlify.app/
 
@@ -42,7 +42,7 @@ There is a front-end app available for this API, which will allow you to interac
 - In your teminal CLI:
 
 ```
-$ git clone https://github.com/leekli/nc-news.git
+$ git clone https://github.com/leekli/nc-news-backend.git
 $ cd nc-news
 ```
 
@@ -56,16 +56,16 @@ $ npm install
 
 ### **Environment setup:**
 
-- Once the repo has been clongedYou will need to create two .env files in the root folder: with the `.env.test` and `.env.development` file names.
-- In each of these `.env` files you will need to add `PGDATABASE=<database_name_here>` to each file, pointing to the relevant database:
+- Once the repo has been cloned, you will need to create two .env files in the root folder: with the `.env.test` and `.env.development` file names in the root directory.
+- In each of these corresponding `.env` files you will need to add `PGDATABASE=<database_name_here>` to each file, pointing to the relevant database:
 
-  > .development database is `nc_news`
+  > .env.development database is `nc_news`
 
-  > .test database is `nc_news_test`
+  > .env.test database is `nc_news_test`
 
 ### **Database set-up and seeding:**
 
-- Before using or testing the application, you will need to set the database up and then seed it with the data:
+- Before using or testing the application, you will need to set the database up, and then seed it with the data:
 
 ```
 $ npm run setup-dbs
@@ -74,7 +74,7 @@ $ npm run seed
 
 # **Testing**
 
-- `Jest` is the framework used to test this application.
+- `Jest` and `Supertest` is the framework used to test this application.
 
 - To run tests:
 
