@@ -1,0 +1,38 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: intro
+        run: echo "This is the Test and Deploy script..."
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: setup postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: nc_news_test
+          postgresql user: test-user
+          postgresql password: testuserpassword
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: PGDATABASE=nc_news_test PGUSER=test-user PGPASSWORD=testuserpassword npm t
