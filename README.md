@@ -82,6 +82,14 @@ $ npm run seed
 $ npm test
 ```
 
+# **Docker**
+
+- This repo can be ran in a `Docker` container, a `compose.yaml` & `Dockerfile` are included in the root folder. Run the following command:
+
+```
+$ docker compose up
+```
+
 ---
 
 ### **Application dependencies:**

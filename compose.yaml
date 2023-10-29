@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  app:
+    restart: on-failure
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:5432/nc_news
+      PGDATABASE: nc_news
+      NODE_ENV: development
+      PORT: 3000
+    ports:
+      - '3000:3000'
+    command: >
+      sh -c "npm run seed && 
+             npm run start"
+
+    volumes:
+      - .:/be-nc-news
+      - /be-nc-news/node_modules
+  postgres:
+    image: postgres:14
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: nc_news
