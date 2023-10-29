@@ -12,7 +12,6 @@
     "seed-prod": "NODE_ENV=production npm run seed",
     "start": "node listen.js",
     "lint": "eslint --fix .",
-    "prepare": "husky install",
     "precommit": "npm run lint && npm test"
   },
   "repository": {
