@@ -1,18 +1,14 @@
-const express = require("express");
+const express = require('express');
 
-const {
-  getUsers,
-  getUserByUsername,
-  postUser,
-} = require("../controllers/users.controllers.js");
+const { getUsers, getUserByUsername, postUser } = require('../controllers/users.controllers');
 
 const usersRouter = express.Router();
 
 // GET Requests
-usersRouter.get("/", getUsers);
-usersRouter.get("/:username", getUserByUsername);
+usersRouter.get('/', getUsers);
+usersRouter.get('/:username', getUserByUsername);
 
 // POST Requests
-usersRouter.post("/", postUser);
+usersRouter.post('/', postUser);
 
 module.exports = usersRouter;

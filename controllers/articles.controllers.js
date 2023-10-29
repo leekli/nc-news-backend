@@ -6,40 +6,36 @@ const {
   addComment,
   addArticle,
   removeArticle,
-} = require("../models/articles.models.js");
+} = require('../models/articles.models');
 
-const { checkExists } = require("../db/utils/utils.js");
+const { checkExists } = require('../db/utils/utils');
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic, author, search } = req.query;
+  const {
+    topic, author, search, sort_by, order,
+  } = req.query;
 
   if (!topic && !author) {
-    fetchArticles(sort_by, order, topic, author, search)
+    fetchArticles(topic, author, search, sort_by, order)
       .then((articles) => {
         res.status(200).send({ articles });
       })
       .catch(next);
   } else if (topic) {
-    return checkExists("topics", "slug", topic)
-      .then(() => {
-        return fetchArticles(sort_by, order, topic, author, search).then(
-          (articles) => {
-            res.status(200).send({ articles });
-          }
-        );
-      })
+    return checkExists('topics', 'slug', topic)
+      .then(() => fetchArticles(topic, author, search, sort_by, order).then((articles) => {
+        res.status(200).send({ articles });
+      }))
       .catch(next);
   } else if (author) {
-    return checkExists("users", "username", author)
-      .then(() => {
-        return fetchArticles(sort_by, order, topic, author, search).then(
-          (articles) => {
-            res.status(200).send({ articles });
-          }
-        );
-      })
+    return checkExists('users', 'username', author)
+      .then(() => fetchArticles(topic, author, search, sort_by, order).then((articles) => {
+        res.status(200).send({ articles });
+      }))
       .catch(next);
   }
+
+  return false;
 };
 
 exports.getArticleById = (req, res, next) => {
@@ -56,12 +52,10 @@ exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const articleBody = req.body;
 
-  return checkExists("articles", "article_id", article_id)
-    .then(() => {
-      return updateArticleById(article_id, articleBody).then((article) => {
-        res.status(200).send({ article });
-      });
-    })
+  return checkExists('articles', 'article_id', article_id)
+    .then(() => updateArticleById(article_id, articleBody).then((article) => {
+      res.status(200).send({ article });
+    }))
     .catch(next);
 };
 
@@ -69,12 +63,10 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
 
-  return checkExists("articles", "article_id", article_id)
-    .then(() => {
-      return fetchCommentsByArticleId(article_id, sort_by).then((comments) => {
-        res.status(200).send({ comments });
-      });
-    })
+  return checkExists('articles', 'article_id', article_id)
+    .then(() => fetchCommentsByArticleId(article_id, sort_by).then((comments) => {
+      res.status(200).send({ comments });
+    }))
     .catch(next);
 };
 
@@ -83,14 +75,10 @@ exports.postCommentByArticleId = (req, res, next) => {
   const { username } = req.body;
   const newComment = req.body;
 
-  return checkExists("articles", "article_id", article_id)
-    .then(() => {
-      return checkExists("users", "username", username).then(() => {
-        return addComment(article_id, newComment).then((comment) => {
-          res.status(201).send({ comment });
-        });
-      });
-    })
+  return checkExists('articles', 'article_id', article_id)
+    .then(() => checkExists('users', 'username', username).then(() => addComment(article_id, newComment).then((comment) => {
+      res.status(201).send({ comment });
+    })))
     .catch(next);
 };
 
@@ -107,11 +95,9 @@ exports.postArticle = (req, res, next) => {
 exports.deleteArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
-  return checkExists("articles", "article_id", article_id)
-    .then(() => {
-      return removeArticle(article_id).then(() => {
-        res.sendStatus(204);
-      });
-    })
+  return checkExists('articles', 'article_id', article_id)
+    .then(() => removeArticle(article_id).then(() => {
+      res.sendStatus(204);
+    }))
     .catch(next);
 };

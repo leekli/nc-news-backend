@@ -1,13 +1,13 @@
-const cors = require("cors");
-const express = require("express");
-const apiRouter = require("./routers/app.router.js");
+const cors = require('cors');
+const express = require('express');
+const apiRouter = require('./routers/app.router');
 
 const {
   handleCustomErrors,
   handlePsqlErrors,
   handleServerErrors,
   handle404s,
-} = require("./errors/errors.js");
+} = require('./errors/errors');
 
 // Initalise Express server
 const app = express();
@@ -19,10 +19,10 @@ app.use(cors());
 app.use(express.json());
 
 // Router Endpoints
-app.use("/api", apiRouter);
+app.use('/api', apiRouter);
 
 // Error handling
-app.all("*", handle404s);
+app.all('*', handle404s);
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
 app.use(handleServerErrors);

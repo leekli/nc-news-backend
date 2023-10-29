@@ -7,11 +7,12 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
-    "prepare": "husky install",
     "output-dev": "psql -f view-dev-db.sql > view-dev-db.txt",
     "output-test": "psql -f view-test-db.sql > view-test-db.txt",
     "seed-prod": "NODE_ENV=production npm run seed",
-    "start": "node listen.js"
+    "start": "node listen.js",
+    "lint": "eslint --fix .",
+    "precommit": "npm run lint && npm test"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,9 @@
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0",
     "husky": "^8.0.3",
     "jest": "^27.5.1",
     "jest-sorted": "^1.0.14",
@@ -42,5 +46,10 @@
     "setupFilesAfterEnv": [
       "jest-sorted"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
   }
 }
